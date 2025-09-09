@@ -13,6 +13,53 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# 1. Definición del problema
+
+## 1.3 Preguntas de investigación o hipótesis a responder.
+
+
+
+# 2. Descripción del datataset 
+
+## 2.2 Variables disponibles y su significado
+
+- **review_id**: Número identificativo de la reseña.
+- **user_id**: Número identificativo del usuario.
+- **app_name**: Nombre de la app desde donde se hizo la reseña.
+- **app_category**: Categoría de la app desde donde se hace la reseña.
+- **review_text**: Contenido de texto de la reseña.
+- **review_language**: Lenguaje de la reseña.
+- **rating**: Puntuación de la reseña.
+- **review_date**: Fecha de publicación de la reseña.
+- **verified_purchase**: Verificación de validez de compra.
+- **device_type**: Tipo de dispositivo desde donde se hizo la reseña.
+- **num_helpful_votes**: Número de votaciones de ayuda de la reseña por otros usuarios.
+- **use_age**: Edad de usuario que realizo la reseña.
+- **user_country**: País del usuario que hizo la reseña.
+- **user_gender**: Género del usuario que hizo la reseña.
+- **app_version**: Versión de la app desde donde se hizo la reseña.
+
+
+
+# 3. Análisis Exploratorio de Datos (EDA) Básico
+
+## 3.1.3 Identificar cantidad de filas y columnas.
+
+```{r}
+dim(data_reviews)
+```
+El dataset presenta 2514 fila con 15 columnas.
+
+## 3.3.1 Contar cuántos valores faltantes hay por variable (sin necesidad de imputarlos todavía).
+
+```{r}
+null_data <- colSums(is.na(data_reviews))
+print(null_data)
+
+```
+
+
+
 ## Importación de librerías.
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -20,3 +67,18 @@ library(dplyr)
 library(tidyverse)
 ```
 
+## 3.1.1 Importación de dataset.
+
+```{r}
+data_reviews <- read.csv("multilingual_mobile_app_reviews_2025.csv")
+```
+
+
+# 4.Revisión bibliográfica.
+
+
+# 5.Plan de trabajo.
+
+## 5.3 Herramientas y lenguajes de programación.
+
+Se usa
