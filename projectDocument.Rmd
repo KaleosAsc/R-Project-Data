@@ -49,8 +49,13 @@ Si  la mayoría de usuarios del mundo están conectados a windows, será el sist
 - **app_version**: Versión de la app desde donde se hizo la reseña.
 
 
-
 # 3. Análisis Exploratorio de Datos (EDA) Básico
+
+## 3.1.1 Importación de dataset.
+
+```{r}
+data_reviews <- read.csv("multilingual_mobile_app_reviews_2025.csv")
+```
 
 ## 3.1.3 Identificar cantidad de filas y columnas.
 
@@ -74,12 +79,6 @@ print(null_data)
 library(ggplot2)
 library(dplyr)
 library(tidyverse)
-```
-
-## 3.1.1 Importación de dataset.
-
-```{r}
-data_reviews <- read.csv("multilingual_mobile_app_reviews_2025.csv")
 ```
 
 
@@ -131,3 +130,26 @@ Facilitado por su portabilidad, y cambios de las aplicaciones  de edición en c�
 *Dificultad*:Presencia de valores atípicos diferentes review_text que afecten la detección de spam.
 
 *Estrategia*: Definición de procesos de análisis de relación(sea de cualitativo o cuantitativo) que definan su efecto en la generación de reseñas de spam.
+
+# 7. Conclusión preliminar
+
+## 7.1  Resumen del planteamiento del problema y hallazgos iniciales.
+
+Aplicar la ecuación de Naive Bayes para la clasificación de spam en reseñas de las aplicaciones móviles principales en el mundo, por otra parte solucionar problemas con la claridad de los datos dentro del dataset para evitar el dispersión en la clasificación de reseñas y del mismo modo encontrar algún tipo de relación con las demás variables presentables dentro del dataset que puedan influir en el proceso de clasificación.
+
+Establece el reconocimiento de la variables, además de la que compone a reseña como números identificativos del usuario, edad de los usuarios, sistema operativo, tipo de dispositivo, categoría de aplicación entre otros que pueden ser de ayuda para ver una relación entre la variables y su comportamiento con respecto a la reseñas.
+
+Identificar un conjunto de dificultades como datos nulos, atípicos y medidas evaluativas de efectividad para proponer un serie de estrategias que nos permiten medir el alcance de funcionamiento del sistema para discernir el impacto de la reseña de carácter verdadero y de spam en el mundo real y su impacto en el rendimiento de los servicios aplicativos.
+
+Comprender la sustentación técnica como lenguajes de programación con enfoque estadísticos, que nos permitan aplicar la ecuación Niave Bayes con gráficas estadísticas que para fácil visualización, además de un gran complejo de librerías de código abierto que facilitan el sistema de análisis de desarrollo.
+
+
+# Referencias
+
+[1] GeeksforGeeks, “Pros and Cons of R Programming Language,” GeeksforGeeks, Jul. 23, 2025. https://www.geeksforgeeks.org/r-language/pros-and-cons-of-r-programming-language/
+
+[2] R Core Team, “R Language Definition.”https://cran.r-project.org/doc/manuals/r-release/R-lang.html
+
+[3] GeeksforGeeks, “RStudio Tutorial,” GeeksforGeeks, Jul. 23, 2025. https://www.geeksforgeeks.org/r-language/rstudio-tutorial/
+
+[4] “Getting started | Markdown Guide.” https://www.markdownguide.org/getting-started/
