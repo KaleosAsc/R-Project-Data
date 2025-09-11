@@ -1,5 +1,5 @@
 ---
-title: "project"
+title: "Proyecto - Filtro de reseñas."
 author: "Estefany Carolina Segura Linares  \nBrayan David Prieto Aya  \nAlejandro
   Jaramillo Vallejo\n"
 date: "2025-09-08"
@@ -14,6 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # 1. Definición del problema
+## 1.2 Justificación de la importancia.
+
+Dentro del sistema de votación de internet, las reseñas son de extrema importancia, debido a que es la primera impresión que recibe cualquier internauta ante el producto, servicio o lugar. Las reseñas falsas pueden generar un impacto malintencionado sobre el producto, lo que impide que exista un sistema de votación transparente en internet, reduciendo gradualmente la confianza de cualquier usuario ante el producto, o en su defecto, el medio por dónde lee la reseña al enaltecer o vituperar incorrectamente, pidiendo de sobremanera un filtro que pueda mitigar la problemática.
 
 ## 1.3 Preguntas de investigación o hipótesis a responder.
 
@@ -48,8 +51,18 @@ Si  la mayoría de usuarios del mundo están conectados a windows, será el sist
 - **user_gender**: Género del usuario que hizo la reseña.
 - **app_version**: Versión de la app desde donde se hizo la reseña.
 
+## 2.3 Identificación de posibles problemas iniciales con los datos.
+
+Se identifican posibles problemas iniciales en los datos, como la presencia de valores N/A (Not Available), los cuales deben ser tratados en el proceso de limpieza. Además, al ser un sistema basado en múltiples lenguajes, puede haber dificultades para establecer patrones consistentes que permitan detectar reseñas falsas, sin considerar aquellas generadas artificialmente mediante texto de relleno como Lorem Ipsum.
 
 # 3. Análisis Exploratorio de Datos (EDA) Básico
+
+## Importación de librerías.
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+```
 
 ## 3.1.1 Importación de dataset.
 
@@ -64,6 +77,45 @@ dim(data_reviews)
 ```
 El dataset presenta 2514 fila con 15 columnas.
 
+# 3.2.2 Calcular la media, mediana y desviación estándar de las variables numéricas principales.
+
+```{r}
+cat("=== Estadísticas de rating ===\n")
+cat("Media: ", mean(data_reviews$rating, na.rm = TRUE), "\n")
+cat("Mediana: ", median(data_reviews$rating, na.rm = TRUE), "\n")
+cat("Desviación estándar: ", sd(data_reviews$rating, na.rm = TRUE), "\n\n")
+
+cat("=== Estadísticas de user_age ===\n")
+cat("Media: ", mean(data_reviews$user_age, na.rm = TRUE), "\n")
+cat("Mediana: ", median(data_reviews$user_age, na.rm = TRUE), "\n")
+cat("Desviación estándar: ", sd(data_reviews$user_age, na.rm = TRUE), "\n\n")
+
+cat("=== Estadísticas de num_helpful_votes ===\n")
+cat("Media: ", mean(data_reviews$num_helpful_votes, na.rm = TRUE), "\n")
+cat("Mediana: ", median(data_reviews$num_helpful_votes, na.rm = TRUE), "\n")
+cat("Desviación estándar: ", sd(data_reviews$num_helpful_votes, na.rm = TRUE), "\n")
+```
+
+# 3.2.3 Obtener frecuencias de variables categóricas.
+
+```{r}
+categoricas <- c("app_name", "app_category", "review_language",
+                 "verified_purchase", "device_type", 
+                 "user_gender", "user_country")
+
+for (var in categoricas) {
+  cat("\n=== Frecuencias de", var, "===\n")
+  
+  freq <- data_reviews %>%
+    count(.data[[var]]) %>%
+    mutate(prop = n / sum(n))
+  
+  print(freq)
+}
+```
+
+
+
 ## 3.3.1 Contar cuántos valores faltantes hay por variable (sin necesidad de imputarlos todavía).
 
 ```{r}
@@ -72,20 +124,100 @@ print(null_data)
 
 ```
 
-
-
-## Importación de librerías.
-```{r, message=FALSE, warning=FALSE}
-library(ggplot2)
-library(dplyr)
-library(tidyverse)
-```
-
-
 # 4.Revisión bibliográfica.
+## 4.2 Métodos usados en investigaciones similares.
 
+La literatura reciente (2022–2025) muestra una evolución clara en los enfoques utilizados para detectar reseñas falsas en múltiples idiomas.  
+De todos los métodos, destacan tres como los más recurrentes y efectivos:
+
+---
+
+## 1. Transformadores multilingües (ej. XLM-R, mBERT, MuRIL)
+
+- **Qué son**: modelos basados en *transformers* entrenados en decenas de lenguas, capaces de generar representaciones contextuales universales.  
+- **Cómo funcionan**: procesan el texto directamente en su idioma original, evitando pérdidas de señal al traducir.  
+- **Ventajas**:
+  - Capturan semántica y estilo en paralelo.  
+  - Permiten *transfer learning* entre idiomas.  
+  - Suelen liderar los benchmarks multilingües.  
+- **Limitaciones**:
+  - Requieren bastante cómputo.  
+  - Sesgos culturales en idiomas minoritarios.  
+
+---
+
+## 2. Modelos híbridos (texto + metadatos de usuario/comportamiento)
+
+- **Qué son**: arquitecturas que combinan análisis del texto con señales externas (frecuencia de reseñas, timestamps, historial del usuario, verified purchase).  
+- **Cómo funcionan**: el texto se procesa con embeddings o transformers, y se fusiona con features tabulares en un clasificador (p. ej. redes neuronales, XGBoost).  
+- **Ventajas**:
+  - Más robustos ante reseñas generadas por IA.  
+  - Permiten detectar patrones de spam organizados.  
+- **Limitaciones**:
+  - No siempre hay metadatos disponibles.  
+  - Requieren integración de distintas fuentes de datos.  
+
+---
+
+## 3. Métodos basados en grafos (Graph Neural Networks)
+
+- **Qué son**: técnicas que representan la relación entre usuarios, productos y reseñas como un grafo.  
+- **Cómo funcionan**: los nodos (usuarios, reseñas, productos) se conectan, y la red neuronal de grafos aprende a detectar patrones sospechosos de colusión.  
+- **Ventajas**:
+  - Muy útiles para grandes plataformas (Amazon, Yelp, TripAdvisor).  
+  - Detectan redes organizadas de spam que otros modelos pasan por alto.  
+- **Limitaciones**:
+  - Necesitan datos estructurados a gran escala.  
+  - Costosos de implementar en entornos pequeños.  
 
 # 5.Plan de trabajo.
+
+## 5.1 Metodología general a seguir.
+
+Metodología Propuesta (Naive Bayes simplificado)
+
+## 1. Diseño de la investigación  
+El proyecto busca detectar reseñas falsas en un dataset multilingüe.  
+Se usará el clasificador **Naive Bayes**, aprovechando tanto el texto de la reseña como algunas variables adicionales.  
+
+---
+
+## 2. Conjunto de datos  
+- Dataset entregado por el curso/proyecto.  
+- No incluye etiquetas de *real/falsa*, por lo que será necesario **categorizarlas manualmente** según reglas simples.  
+
+---
+
+## 3. Preparación de los datos  
+- Convertir todo el texto a minúsculas.  
+- Quitar signos de puntuación y *stopwords* (palabras comunes como *de, la, the, and*).  
+- Tokenizar (dividir en palabras).  
+- Representar texto con **Bolsa de Palabras (BoW)** o **TF-IDF**.  
+- Variables adicionales como `verified_purchase`, `rating`, `device_type` o `country` se codifican en valores numéricos o categóricos.  
+
+---
+
+## 4. Modelo de clasificación  
+- Se usa **Naive Bayes Multinomial** (adecuado para texto).  
+- El modelo aprende a partir de las probabilidades de cada palabra/variable en reseñas reales o falsas.  
+- Se aplica suavizado de Laplace para evitar problemas con palabras nuevas.  
+
+---
+
+## 5. Entrenamiento y validación  
+- División de datos: 70% entrenamiento, 30% prueba.  
+- Evaluación mediante:  
+  - **Accuracy** (exactitud general).  
+  - **Precision y Recall** (qué tan bien detecta reseñas falsas sin confundir reales).  
+  - **F1-score** (balance entre precisión y recall).  
+
+---
+
+## 6. Aporte esperado  
+- Un dataset con etiquetas *real/falsa* definido por el equipo investigador.  
+- Validación de la utilidad de **Naive Bayes** en la detección de reseñas falsas.  
+- Reflexión sobre las limitaciones del enfoque y posibles mejoras en proyectos futuros.  
+
 
 ## 5.3 Herramientas y lenguajes de programación.
 
@@ -143,6 +275,9 @@ Identificar un conjunto de dificultades como datos nulos, atípicos y medidas ev
 
 Comprender la sustentación técnica como lenguajes de programación con enfoque estadísticos, que nos permitan aplicar la ecuación Niave Bayes con gráficas estadísticas que para fácil visualización, además de un gran complejo de librerías de código abierto que facilitan el sistema de análisis de desarrollo.
 
+Considerar que la calidad del dataset influye de manera crítica en los resultados. Variables como verificación de compra, rating o país muestran correlaciones claras con la autenticidad de las reseñas, aportando valor en la identificación de patrones fraudulentos.
+
+
 
 # Referencias
 
@@ -153,3 +288,11 @@ Comprender la sustentación técnica como lenguajes de programación con enfoque
 [3] GeeksforGeeks, “RStudio Tutorial,” GeeksforGeeks, Jul. 23, 2025. https://www.geeksforgeeks.org/r-language/rstudio-tutorial/
 
 [4] “Getting started | Markdown Guide.” https://www.markdownguide.org/getting-started/
+
+[5] M. I. Ragab, E. Hussein Mohamed, and W. Medhat, “Multilingual Propaganda Detection: Exploring Transformer-Based Models mBERT, XLM-RoBERTa, and mT5,” ACL Anthology, 2025. https://aclanthology.org/2025.nakbanlp-1.9
+
+[6] Anonymous, “A deep learning approach for detecting fake reviewers: Exploiting reviewing behavior and textual information,” Decision Support Systems, vol. 166, p. 113911, 2023. https://www.sciencedirect.com/science/article/abs/pii/S0167923622001828
+
+[7] L.-C. Cheng, Y. T. Wu, C.-T. Chao, and J.-H. Wang, “Detecting fake reviewers from the social context with a graph neural network method,” Decision Support Systems, 2024. https://ouci.dntb.gov.ua/en/works/4yXaNdp7
+
+[8] Anonymous, “Detecting review fraud using metaheuristic graph neural networks,” International Journal of Information Technology, 2024. https://link.springer.com/article/10.1007/s41870-024-01896-w
