@@ -7,13 +7,32 @@ output:
   pdf_document: default
 ---
 
-## Justificación de su importancia.
+# 1 Definicion del problema
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1. Definición del problema
+# 1.1 Descripción clara del problema
+En el mundo de las aplicaciones móviles, las reseñas de usuarios son un factor clave para la **reputación**, **visibilidad** y **descarga** de una app en plataformas como *Google Play* o *App Store*, entre otras.  
+
+Sin embargo, en 2025 el crecimiento exponencial de usuarios globales trae consigo un gran desafío:
+
+- Muchas reseñas son escritas en **múltiples idiomas**.  
+- Aparecen **reseñas falsas o spam**, generadas por bots o campañas de manipulación de reputación, incluso por usuarios incentivados.  
+- Estas situaciones afectan directamente la **calidad percibida** de una aplicación.  
+
+## 1.1.2 Problemas Generados
+
+1. **Pérdida de confianza** en las reseñas por parte de los usuarios finales.  
+2. **Competencia desleal** entre desarrolladores, donde algunos manipulan el ranking con reseñas artificiales.  
+3. **Dificultad para los sistemas automáticos de moderación**, que deben procesar textos en distintos idiomas, con jergas, abreviaciones y emojis.  
+4. **Impacto en los algoritmos de recomendación** de las tiendas de aplicaciones, que dependen de reseñas confiables para posicionar apps.  
+
+## 1.1.3 Importancia del Problema
+
+El manejo de reseñas falsas y multilingües no solo afecta la percepción de los usuarios, sino también la **transparencia del mercado de aplicaciones móviles**, influyendo en descargas, ingresos y sostenibilidad del ecosistema digital.
+
 ## 1.2 Justificación de la importancia.
 
 Dentro del sistema de votación de internet, las reseñas son de extrema importancia, debido a que es la primera impresión que recibe cualquier internauta ante el producto, servicio o lugar. Las reseñas falsas pueden generar un impacto malintencionado sobre el producto, lo que impide que exista un sistema de votación transparente en internet, reduciendo gradualmente la confianza de cualquier usuario ante el producto, o en su defecto, el medio por dónde lee la reseña al enaltecer o vituperar incorrectamente, pidiendo de sobremanera un filtro que pueda mitigar la problemática.
@@ -32,6 +51,11 @@ Si  la mayoría de usuarios del mundo están conectados a windows, será el sist
 
 
 # 2. Descripción del datataset 
+
+## 2.2.1 Nombre y fuentes del dataset
+
+multilingual-mobile-app-reviews-dataset-2025
+“multilingual-mobile-app-reviews-dataset-2025”,Kaggle.com. Disponible en: https://www.kaggle.com/datasets/pratyushpuri/multilingual-mobile-app-reviews-dataset-2025. 
 
 ## 2.2 Variables disponibles y su significado
 
@@ -70,12 +94,38 @@ library(tidyverse)
 data_reviews <- read.csv("multilingual_mobile_app_reviews_2025.csv")
 ```
 
+## 3.1.2 Mostrar las primeras filas de los datos
+```{r}
+head(data_reviews, 5)
+```
+
 ## 3.1.3 Identificar cantidad de filas y columnas.
 
 ```{r}
 dim(data_reviews)
 ```
 El dataset presenta 2514 fila con 15 columnas.
+
+## 3.2.1 Verificar el tipo de variables (numéricas o categóricas).
+
+# Variables Cuantitativas (numéricas)
+- **rating**
+- **num_helpful_votes**
+- **user_age**
+
+# Variables Cualitativas (Categoricas)
+- **review_id**
+- **app_name***
+- **user_id**
+- **app_category**
+- **review_text**
+- **review_language**
+- **review_date**
+- **verified_purchase**
+- **device_type**
+- **user_country**
+- **user_gender**
+- **app_version**
 
 # 3.2.2 Calcular la media, mediana y desviación estándar de las variables numéricas principales.
 
@@ -125,6 +175,16 @@ print(null_data)
 ```
 
 # 4.Revisión bibliográfica.
+
+## 4.1 Estudios previos relacionados con el problema.
+Según Munga et al. [1], la detección de spam en correos electrónicos mediante técnicas de aprendizaje automático ha evolucionado significativamente, empleando algoritmos como Naïve Bayes, SVM y Random Forest para identificar patrones sospechosos en los mensajes.
+
+- [1] S. M. Richard, J. Mathenge, J. Karani, and N. Muriithi, “Spam Detection in Emails Using Machine Learning Techniques: A Review,” ResearchGate, Sep. 3, 2024. [Online]. Available: https://www.researchgate.net/publication/391203243_Spam_Detection_in_Emails_Using_Machine_Learning_Techniques_A_Review
+
+Según Jindal y Liu, “review spam in reviews is widespread” [2], y muestran que reseñas duplicadas y patrones de reseñadores (como escribir muchas reseñas, desviaciones de calificaciones) son señales útiles para detectar reseñas falsas
+
+- [2] N. Jindal y B. Liu, “Opinion Spam and Analysis”, Proceedings of WSDM ’08, Palo Alto, California, USA, Febrero 11-12, 2008. [Online]. Disponible: https://www.cs.uic.edu/~liub/FBS/opinion-spam-WSDM-08.pdf
+
 ## 4.2 Métodos usados en investigaciones similares.
 
 La literatura reciente (2022–2025) muestra una evolución clara en los enfoques utilizados para detectar reseñas falsas en múltiples idiomas.  
@@ -132,7 +192,7 @@ De todos los métodos, destacan tres como los más recurrentes y efectivos:
 
 ---
 
-## 1. Transformadores multilingües (ej. XLM-R, mBERT, MuRIL)
+## 4.2.1 Transformadores multilingües (ej. XLM-R, mBERT, MuRIL)
 
 - **Qué son**: modelos basados en *transformers* entrenados en decenas de lenguas, capaces de generar representaciones contextuales universales.  
 - **Cómo funcionan**: procesan el texto directamente en su idioma original, evitando pérdidas de señal al traducir.  
@@ -146,7 +206,7 @@ De todos los métodos, destacan tres como los más recurrentes y efectivos:
 
 ---
 
-## 2. Modelos híbridos (texto + metadatos de usuario/comportamiento)
+## 4.2.3 Modelos híbridos (texto + metadatos de usuario/comportamiento)
 
 - **Qué son**: arquitecturas que combinan análisis del texto con señales externas (frecuencia de reseñas, timestamps, historial del usuario, verified purchase).  
 - **Cómo funcionan**: el texto se procesa con embeddings o transformers, y se fusiona con features tabulares en un clasificador (p. ej. redes neuronales, XGBoost).  
@@ -159,7 +219,7 @@ De todos los métodos, destacan tres como los más recurrentes y efectivos:
 
 ---
 
-## 3. Métodos basados en grafos (Graph Neural Networks)
+## 4.2.4 Métodos basados en grafos (Graph Neural Networks)
 
 - **Qué son**: técnicas que representan la relación entre usuarios, productos y reseñas como un grafo.  
 - **Cómo funcionan**: los nodos (usuarios, reseñas, productos) se conectan, y la red neuronal de grafos aprende a detectar patrones sospechosos de colusión.  
@@ -176,19 +236,19 @@ De todos los métodos, destacan tres como los más recurrentes y efectivos:
 
 Metodología Propuesta (Naive Bayes simplificado)
 
-## 1. Diseño de la investigación  
+## 5.1.1 Diseño de la investigación  
 El proyecto busca detectar reseñas falsas en un dataset multilingüe.  
 Se usará el clasificador **Naive Bayes**, aprovechando tanto el texto de la reseña como algunas variables adicionales.  
 
 ---
 
-## 2. Conjunto de datos  
+## 5.1.2 Conjunto de datos  
 - Dataset entregado por el curso/proyecto.  
 - No incluye etiquetas de *real/falsa*, por lo que será necesario **categorizarlas manualmente** según reglas simples.  
 
 ---
 
-## 3. Preparación de los datos  
+## 5.1.3 Preparación de los datos  
 - Convertir todo el texto a minúsculas.  
 - Quitar signos de puntuación y *stopwords* (palabras comunes como *de, la, the, and*).  
 - Tokenizar (dividir en palabras).  
@@ -197,14 +257,14 @@ Se usará el clasificador **Naive Bayes**, aprovechando tanto el texto de la res
 
 ---
 
-## 4. Modelo de clasificación  
+## 5.1.4. Modelo de clasificación  
 - Se usa **Naive Bayes Multinomial** (adecuado para texto).  
 - El modelo aprende a partir de las probabilidades de cada palabra/variable en reseñas reales o falsas.  
 - Se aplica suavizado de Laplace para evitar problemas con palabras nuevas.  
 
 ---
 
-## 5. Entrenamiento y validación  
+## 5.1.5. Entrenamiento y validación  
 - División de datos: 70% entrenamiento, 30% prueba.  
 - Evaluación mediante:  
   - **Accuracy** (exactitud general).  
@@ -213,10 +273,46 @@ Se usará el clasificador **Naive Bayes**, aprovechando tanto el texto de la res
 
 ---
 
-## 6. Aporte esperado  
+## 5.1.6. Aporte esperado  
 - Un dataset con etiquetas *real/falsa* definido por el equipo investigador.  
 - Validación de la utilidad de **Naive Bayes** en la detección de reseñas falsas.  
 - Reflexión sobre las limitaciones del enfoque y posibles mejoras en proyectos futuros.  
+
+
+
+## 5.2 Cronograma de trabajo 
+```{r}
+library(ggplot2)
+
+# Datos del cronograma
+cronograma <- data.frame(
+  fase = c("Diseño de la investigación",
+           "Conjunto de datos",
+           "Preparación de los datos",
+           "Modelo de clasificación",
+           "Entrenamiento y validación",
+           "Análisis y resultados",
+           "Informe final"),
+  inicio = as.Date(c("2025-09-15","2025-09-16","2025-09-17",
+                     "2025-10-13","2025-10-27","2025-11-10","2025-11-17")),
+  fin    = as.Date(c("2025-09-21","2025-09-28","2025-10-12",
+                     "2025-10-26","2025-11-09","2025-11-16","2025-11-23"))
+)
+
+# Gráfico de Gantt con divisiones de fases
+ggplot(cronograma, aes(x = inicio, xend = fin, y = fase, yend = fase)) +
+  geom_segment(size = 5, color = "steelblue") +
+  # Líneas divisorias horizontales entre fases
+  geom_hline(yintercept = 1:length(cronograma$fase) + 0.5,
+             linetype = "solid", color = "gray70", size = 0.5) +
+  labs(title = "Cronograma-Trabajo: Detección de Reseñas Falsas",
+       x = "Fecha", y = "Fases") +
+  scale_x_date(date_breaks = "3 days", date_labels = "%d-%b") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(face = "bold", hjust = 0.5))
+```
 
 
 ## 5.3 Herramientas y lenguajes de programación.
@@ -266,6 +362,10 @@ Facilitado por su portabilidad, y cambios de las aplicaciones  de edición en c�
 # 7. Conclusión preliminar
 
 ## 7.1  Resumen del planteamiento del problema y hallazgos iniciales.
+
+En las aplicaciones móviles, las reseñas de los usuarios son muy importantes porque influyen en la reputación, descargas y visibilidad de una app. Sin embargo, hoy en día existen dos grandes problemas: la gran cantidad de reseñas en diferentes idiomas y la presencia de reseñas falsas o manipuladas.
+
+Los hallazgos iniciales muestran que estas situaciones afectan la calidad percibida de las aplicaciones y el correcto funcionamiento de los sistemas de recomendación en las tiendas digitales.
 
 Aplicar la ecuación de Naive Bayes para la clasificación de spam en reseñas de las aplicaciones móviles principales en el mundo, por otra parte solucionar problemas con la claridad de los datos dentro del dataset para evitar el dispersión en la clasificación de reseñas y del mismo modo encontrar algún tipo de relación con las demás variables presentables dentro del dataset que puedan influir en el proceso de clasificación.
 
