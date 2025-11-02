@@ -1,0 +1,16 @@
+---
+title: "Proyecto - Filtro de reseñas."
+author: "Estefany Carolina Segura Linares  \nBrayan David Prieto Aya  \nAlejandro
+  Jaramillo Vallejo\n"
+date: "2025-10-28"
+output:
+  pdf_document: default
+---
+
+# Contextualización del problema y su relevancia.
+
+- Con respecto a la competividad de la empresas en el entorno digital, la reseñas son una parte cotidiana de la compra en linea de productos en la actualidad, por esta razón. La posición de este tipo de producto tiene un gran influencia 
+
+# Objetivo general
+
+- Determinar la insidencia con respecto su una reseña tendra la caracteristica de ser una reseña de tipo spam o verdadera.
