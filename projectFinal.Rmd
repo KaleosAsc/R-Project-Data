@@ -6,11 +6,92 @@ date: "2025-10-28"
 output:
   pdf_document: default
 ---
+```{r}
+library(readr)
+multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025.csv")
+View(multilingual_mobile_app_reviews_2025)
+```
 
-# Contextualización del problema y su relevancia.
+# 1. Introducción
+- Breve presentación del proyecto.
+- Contextualización del problema y su relevancia.
 
-- Con respecto a la competividad de la empresas en el entorno digital, la reseñas son una parte cotidiana de la compra en linea de productos en la actualidad, por esta razón. La posición de este tipo de producto tiene un gran influencia 
+La influencia del internet ha cambiado la dinamicas de la relevancia de un servicio, las personas denominados en un rol de usuarios buscan la buena imagen a la hora descargar algun tipo de aplicación por medio de las reseñas que validan la experiencia del acceso a este mismo para tomar una decisión, en este caso las reseñas positivas pueden influir en prestigio asociado al negocio.
 
-# Objetivo general
+Por eso, se pueden dar sponsors de "opinion spamming" donde se patrocinan reseñas fraudulentas para promover aplicaciones o en caso de compotencia desleal, para desvaluar una aplicación de otro negocio por el área de un servicio. 
 
-- Determinar la insidencia con respecto su una reseña tendra la caracteristica de ser una reseña de tipo spam o verdadera.
+De esta manera, aplicar sistemas de mineria de datos para evaluar no veridicas reseñas positivas o en orden de probar un competencia justa dentro del negocio de las aplicaciones que se quieren dañar su reputación, por esto mismo genera procesos de datos que permiten dar una resolución real a los usuarios o identificar que tipo de estructuras se usan en ese tipo de practicas.
+
+
+# 2. Justificación
+- Importancia del estudio de datos en el problema abordado.
+- Valor agregado del análisis realizado.
+
+# 3. Objetivos
+- **General**: Enunciar el objetivo principal del proyecto.
+
+Generar un sistema de mineria de datos, que aplica el algoritmo de Naive Bayes para determinar y/o de reseñas spam multilenguaje para aplicaciones. 
+
+- **Específicos**: Al menos tres objetivos que detallen las metas técnicas del análisis.
+
+# 4. Fases del Proceso KDD (documentadas según su aplicación)
+
+## 4.1 Dominio del problema
+- Describir el contexto del fenómeno o situación a analizar.
+
+Dentro de la competición digital que se presenta hoy dentro de los negocios digitales, las reseñas se han vuelto una forma bastante importante para acceder a un servicio digital(app), siendo un actividad tan importante para la posición de marca de un negocio que opta por este medio las reseñas determinan su puesto frente a la competenecia y el mercado.
+
+Debido a esto se puede presentar situaciones donde la reseñas son patrocinadas en una inflación por spam para posicionar la marca de app o utilizar la tecnica para desprestigiar a los competidores genera una duda de la veracidad de los servicios digitales.
+
+El modelo presente busca evaluar y predecir que tipo de contenido en reseña multilenguaje determina que una reseña en una aplicación es de tipo spam, por medio del algoritmo de Naive Bayes con su especialización en clasificar nos permite discernir en el comportamiento de competenecia desleal en linea.
+
+
+
+
+- Formular preguntas de investigación o hipótesis que orienten la minería de datos.
+- Identificar la relevancia del problema y su impacto en la toma de decisiones.
+
+## 4.2 Selección de Datos
+- Describir la fuente de los datos (base utilizada, variables disponibles).
+
+- Seleccionar las variables relevantes y justificar su elección.
+
+Para la alimentación y elección del dataset se tomaran las variables 
+- **review_text** : El contenido de texto de la reseña asociada a la aplicación que contiene palabras o mensajes que indiquen spam.
+
+- **rating** : Puntuación de la aplicación para valoración si presenta algun tipo de inflación.
+
+- **verified_purchase**: Variable que verifica si una reseña ha sido verificada por validez, tal vez las cantidades esten infladas para el posicionamiento de la aplicación.
+
+- Indicar las variables eliminadas (por redundancia, irrelevancia o datos faltantes excesivos).
+
+## 4.3 Limpieza de Datos
+- Valores faltantes: especificar la estrategia usada (eliminación, imputación, estimación).
+- Errores e inconsistencias: documentar correcciones, duplicados o errores tipográficos.
+- Outliers: describir el método de detección (boxplot, z-score, etc.) y las decisiones tomadas.
+
+## 4.4 Transformación de Datos
+- Normalización o estandarización de variables numéricas.
+- Codificación de variables categóricas (one-hot o label encoding).
+- Creación de nuevas variables derivadas relevantes para el modelo.
+- Reducción de dimensionalidad, si aplica (PCA u otras técnicas).
+- Mostrar fragmentos de código en R y comparaciones “antes y después” de las tablas.
+
+## 4.5 Minería de Datos
+- Seleccionar y justificar el algoritmo o técnica empleada (clasificación, regresión, clustering, etc.).
+- Describir la división de datos (entrenamiento y prueba).
+- Presentar las métricas de evaluación (Accuracy, F1-Score, MAE, etc.).
+- Incluir visualizaciones que respalden los resultados del modelo.
+
+## 4.6 Interpretación y Evaluación
+- Analizar críticamente los resultados obtenidos.
+- Validar el conocimiento descubierto frente a las hipótesis y objetivos planteados.
+- Evaluar el valor del conocimiento extraído para el contexto del problema.
+
+# 5. Conclusiones
+- Sintetizar los principales hallazgos.
+- Reflexionar sobre el proceso completo y sus limitaciones.
+- Proponer posibles trabajos futuros o mejoras.
+
+# 6. Anexos
+- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis.
