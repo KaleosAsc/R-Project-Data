@@ -1,0 +1,490 @@
+---
+title: "Proyecto - Filtro de reseñas."
+author: "Estefany Carolina Segura Linares  \nBrayan David Prieto Aya  \nAlejandro
+  Jaramillo Vallejo\n"
+date: "2025-10-28"
+output:
+  pdf_document: default
+---
+
+# 1. Introducción
+- Breve presentación del proyecto.
+- Contextualización del problema y su relevancia.
+
+La influencia del internet ha cambiado la dinamicas de la relevancia de un servicio, las personas denominados en un rol de usuarios buscan la buena imagen a la hora descargar algun tipo de aplicación por medio de las reseñas que validan la experiencia del acceso a este mismo para tomar una decisión, en este caso las reseñas positivas pueden influir en prestigio asociado al negocio.
+
+Por eso, se pueden dar sponsors de "opinion spamming" donde se patrocinan reseñas fraudulentas para promover aplicaciones o en caso de compotencia desleal, para desvaluar una aplicación de otro negocio por el área de un servicio. 
+
+De esta manera, aplicar sistemas de mineria de datos para evaluar no veridicas reseñas positivas o en orden de probar un competencia justa dentro del negocio de las aplicaciones que se quieren dañar su reputación, por esto mismo genera procesos de datos que permiten dar una resolución real a los usuarios o identificar que tipo de estructuras se usan en ese tipo de practicas.
+
+
+# 2. Justificación
+La importancia del estudio de los datos en este problema radica en comprender a fondo qué variables son realmente relevantes para el sistema de clasificación. No todas las características presentes en el conjunto de datos aportan información útil, y un análisis preliminar permite identificar aquellas que influyen directamente en la detección y clasificación de las reseñas. Este proceso no solo evita el ruido dentro del modelo, sino que también mejora la precisión y eficiencia del algoritmo, al centrarse en los patrones lingüísticos y semánticos más representativos. Además, el estudio de los datos permite detectar sesgos, inconsistencias o distribuciones desbalanceadas, factores que pueden comprometer la capacidad del sistema para generalizar correctamente ante nuevas reseñas. En conjunto, este análisis es un paso fundamental para garantizar la calidad, coherencia y validez del modelo de clasificación.
+
+- Valor agregado del análisis realizado.
+
+# 3. Objetivos
+- **General**: Enunciar el objetivo principal del proyecto.
+
+Generar un sistema de mineria de datos, que aplica el algoritmo de Naive Bayes para determinar y/o de reseñas spam multilenguaje para aplicaciones. 
+
+- **Específicos**: Al menos tres objetivos que detallen las metas técnicas del análisis.
+
+Identificar las palabras o términos con mayor peso predictivo dentro de las reseñas SPAM y no-SPAM, aportando interpretabilidad al modelo.
+
+Analizar los patrones de comportamiento de los usuarios que generan reseñas SPAM, identificando tendencias según el sistema operativo y otras variables demográficas o técnicas relevantes.
+
+Diseñar un dashboard interactivo que permita visualizar la tendencia de reseñas en función de la app seleccionada.
+
+
+# 4. Fases del Proceso KDD (documentadas según su aplicación)
+
+## 4.1 Dominio del problema
+- Describir el contexto del fenómeno o situación a analizar.
+
+Dentro de la competición digital que se presenta hoy dentro de los negocios digitales, las reseñas se han vuelto una forma bastante importante para acceder a un servicio digital(app), siendo un actividad tan importante para la posición de marca de un negocio que opta por este medio las reseñas determinan su puesto frente a la competenecia y el mercado.
+
+Debido a esto se puede presentar situaciones donde la reseñas son patrocinadas en una inflación por spam para posicionar la marca de app o utilizar la tecnica para desprestigiar a los competidores genera una duda de la veracidad de los servicios digitales.
+
+El modelo presente busca evaluar y predecir que tipo de contenido en reseña multilenguaje determina que una reseña en una aplicación es de tipo spam, por medio del algoritmo de Naive Bayes con su especialización en clasificar nos permite discernir en el comportamiento de competenecia desleal en linea.
+
+
+
+
+- Formular preguntas de investigación o hipótesis que orienten la minería de datos.
+- Identificar la relevancia del problema y su impacto en la toma de decisiones.
+
+La relevancia del problema se centra en la necesidad de asegurar la autenticidad de las reseñas en plataformas digitales. La presencia de reseñas falsas o SPAM afecta la credibilidad de los sistemas de valoración y puede distorsionar la percepción que los usuarios tienen sobre un producto o servicio.
+
+Detectar y clasificar adecuadamente este tipo de reseñas permite mantener la confianza del usuario y proteger la reputación de las aplicaciones. Además, contribuye a generar entornos digitales más transparentes y fiables para la toma de decisiones.
+
+El impacto en la toma de decisiones es significativo, ya que los desarrolladores y administradores pueden identificar patrones anómalos, optimizar estrategias de marketing y mejorar la calidad de sus servicios. En conjunto, el análisis de reseñas se convierte en una herramienta clave para fortalecer la gestión y credibilidad de las plataformas.
+
+## 4.2 Selección de Datos
+- Describir la fuente de los datos (base utilizada, variables disponibles).
+
+- Seleccionar las variables relevantes y justificar su elección.
+
+Para la alimentación y elección del dataset se tomaran las variables 
+- **review_text** : El contenido de texto de la reseña asociada a la aplicación que contiene palabras o mensajes que indiquen spam.
+
+- **rating** : Puntuación de la aplicación para valoración si presenta algun tipo de inflación.
+
+- **verified_purchase**: Variable que verifica si una reseña ha sido verificada por validez, tal vez las cantidades esten infladas para el posicionamiento de la aplicación.
+
+- Indicar las variables eliminadas (por redundancia, irrelevancia o datos faltantes excesivos).
+
+Las variables eliminadas fueron:
+
+- **review_id**: Identificador único de cada reseña; no aporta información útil al modelo, ya que su función es únicamente de indexación.
+
+- **user_id**: Identificador único del usuario; no contribuye a la clasificación ni al análisis, y su inclusión puede generar ruido o riesgo de sesgo por usuario.
+
+- **num_helpful_votes**: Número de votos útiles que recibió una reseña; es un valor externo al contenido y puede estar influenciado por la visibilidad o popularidad, no por la autenticidad del texto.
+
+- **user_gender**: Género del usuario; presenta una proporción significativa de datos faltantes y no tiene un impacto directo sobre el contenido o tipo de reseña.
+
+- **app_version**: Versión de la aplicación reseñada; no afecta el análisis semántico ni la clasificación de reseñas, por lo que no es relevante para el modelo.
+
+## 4.3 Limpieza de Datos
+- Valores faltantes: especificar la estrategia usada (eliminación, imputación, estimación).
+
+Imputación de **User_country**
+Para este caso, se decidió imputar el país en función del idioma de la reseña, utilizando una relación directa entre review_language y el país donde dicho idioma es predominante. Este método de imputación basada en reglas permite mantener la coherencia contextual de los datos, evitando introducir ruido aleatorio o sesgos significativos.
+Solo se aplicó la imputación cuando la asociación entre idioma y país era clara y dominante (por ejemplo, japonés con Japón, portugués con Brasil). En idiomas de uso global, como inglés o español, se evitó imputar para no sobrerrepresentar regiones.
+
+Además de eso, se eliminaron los valores restantes no clasificados, que representaron alrededor de 20 campos, un valor ínfimo dentro del total del dataset.
+
+Eliminación de valores faltantes en **user_rating**
+Los registros sin valoración fueron eliminados porque no aportan una medida cuantificable para el análisis o entrenamiento del modelo. Dado que representan un porcentaje muy bajo (alrededor del 1.2% de los datos totales), su eliminación no afecta de forma significativa la representatividad del conjunto.
+
+Imputar estos valores habría introducido varianza artificial y podría distorsionar la distribución del objetivo principal del modelo
+
+Eliminación de valores faltantes en **review_text**
+Las reseñas sin texto fueron eliminadas ya que no contienen información semántica para el análisis de texto o la clasificación basada en lenguaje natural. Aunque algunas aplicaciones permiten dejar una valoración sin comentario, en este contexto analítico el texto es esencial para los modelos de clasificación y detección de spam.
+El número de eliminaciones fue mínimo (aproximadamente otro 1.2%), por lo que esta decisión mejora la calidad del dataset sin comprometer su tamaño.
+
+- Errores e inconsistencias: documentar correcciones, duplicados o errores tipográficos.
+
+El conjunto de datos presentaba desde su origen un alto nivel de calidad y consistencia, sin requerir procesos de depuración significativos. Las variables se encontraban correctamente estructuradas, con tipos de datos apropiados, sin presencia de valores atípicos evidentes, duplicados ni errores de codificación.
+
+En consecuencia, no fue necesario aplicar procedimientos adicionales de limpieza, imputación o transformación más allá de las comprobaciones básicas de integridad. La información se encontraba organizada y libre de anomalías, lo cual facilitó directamente su uso para las etapas de análisis exploratorio y modelado.
+
+Este escenario permitió conservar la estructura original del dataset, garantizando la trazabilidad y autenticidad de los datos, manteniendo así la fidelidad respecto a su fuente y su interpretación analítica.
+
+- Outliers: describir el método de detección (boxplot, z-score, etc.) y las decisiones tomadas.
+
+## 4.4 Transformación de Datos
+- Normalización o estandarización de variables numéricas.
+
+En este caso no se aplicó ningún proceso de normalización o estandarización debido a que la única variable numérica relevante **rating** ya se encuentra expresada en una escala limitada y uniforme (0 a 5). Esta escala es inherentemente comparable y está diseñada para representar de forma directa el nivel de satisfacción del usuario, por lo que no requiere ajustes adicionales.
+
+Además, el modelo seleccionado para el análisis, Naive Bayes, no depende de magnitudes o distancias entre variables, sino de distribuciones de probabilidad. Por tanto, modificar la escala de rating no aportaría mejoras en la capacidad predictiva del modelo ni en la consistencia de los resultados.
+
+- Codificación de variables categóricas (one-hot o label encoding).
+- Creación de nuevas variables derivadas relevantes para el modelo.
+- Reducción de dimensionalidad, si aplica (PCA u otras técnicas).
+- Mostrar fragmentos de código en R y comparaciones “antes y después” de las tablas.
+
+## 4.5 Minería de Datos
+- Seleccionar y justificar el algoritmo o técnica empleada (clasificación, regresión, clustering, etc.).
+- Describir la división de datos (entrenamiento y prueba).
+- Presentar las métricas de evaluación (Accuracy, F1-Score, MAE, etc.).
+- Incluir visualizaciones que respalden los resultados del modelo.
+
+## 4.6 Interpretación y Evaluación
+- Analizar críticamente los resultados obtenidos.
+- Validar el conocimiento descubierto frente a las hipótesis y objetivos planteados.
+- Evaluar el valor del conocimiento extraído para el contexto del problema.
+
+# 5. Conclusiones
+- Sintetizar los principales hallazgos.
+- Reflexionar sobre el proceso completo y sus limitaciones.
+- Proponer posibles trabajos futuros o mejoras.
+
+# 6. Anexos
+- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis.
+
+```{r}
+install.packages("httr")
+install.packages("jsonlite")
+install.packages("cld2")
+```
+```{r}
+library(readr)
+library(dplyr)
+library(httr)
+library(jsonlite)
+library(purrr)
+library(rlang) 
+library(cld2)  
+```
+
+```{r}
+multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025.csv")
+View(multilingual_mobile_app_reviews_2025)
+```
+
+```{r}
+# Contar valores vacíos en todo el dataset
+colSums(is.na(multilingual_mobile_app_reviews_2025))
+```
+
+```{r}
+Copia_Datos_Limpios <- multilingual_mobile_app_reviews_2025
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  select(-review_id, -num_helpful_votes, -user_id, -user_gender, -app_version)
+colSums(is.na(Copia_Datos_Limpios))
+```
+
+```{r}
+# Filtro general para cualquier variable
+filtro_user_country <- Copia_Datos_Limpios %>% filter(is.na(user_country))
+filtro_review_text  <- Copia_Datos_Limpios %>% filter(is.na(review_text))
+filtro_rating       <- Copia_Datos_Limpios %>% filter(is.na(rating))
+```
+
+```{r}
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  mutate(
+    user_country = case_when(
+      review_language == "es" ~ "Spain",          # Spanish
+      review_language == "pt" ~ "Brazil",         # Portuguese
+      review_language == "ja" ~ "Japan",          # Japanese
+      review_language == "hi" ~ "India",          # Hindi
+      review_language == "ko" ~ "South Korea",    # Korean
+      review_language == "zh" ~ "China",          # Chinese
+      review_language == "de" ~ "Germany",        # German
+      review_language == "fr" ~ "France",         # French
+      review_language == "it" ~ "Italy",          # Italian
+      review_language == "ru" ~ "Russia",         # Russian
+      TRUE ~ user_country                         # Keep original if no match
+    )
+  )
+
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  filter(!is.na(rating))
+
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  filter(!is.na(review_text))
+
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  filter(!is.na(user_country))
+
+colSums(is.na(Copia_Datos_Limpios)[, c("user_country", "review_text", "rating")])
+```
+
+```{r}
+sapply(Copia_Datos_Limpios,class)
+```
+```{r}
+language <- unique(Copia_Datos_Limpios$review_language)
+print(languajes)
+typeof(language)
+
+```
+```{r}
+# Asegurar que review_language sea texto
+Copia_Datos_Limpios$review_language <- as.character(Copia_Datos_Limpios$review_language)
+
+# Reemplazar 'zh' por 'zh-Hans' (chino simplificado)
+Copia_Datos_Limpios$review_language[Copia_Datos_Limpios$review_language == "zh"] <- "zh-Hans"
+
+# Verificar valores únicos después de la corrección
+unique(Copia_Datos_Limpios$review_language)
+
+```
+```{r}
+translate_review_text <- function(text, target = "en", key, endpoint, region = "global") {
+  print(text)
+  if (is.na(text) || nchar(text) == 0) print("Value null")
+  
+  url <- paste0(endpoint, "translate?api-version=3.0&to=", target)
+  body <- list(list(Text = text))
+  
+  response <- POST(
+    url,
+    add_headers(
+      `Ocp-Apim-Subscription-Key` = key,
+      `Ocp-Apim-Subscription-Region` = region,
+      `Content-Type` = "application/json"
+    ),
+    body = toJSON(body, auto_unbox = TRUE)
+  )
+  
+  
+  
+  # Manejo de errores
+  if (status_code(response) != 200) {
+    warning(paste("Error:", content(response, "text", encoding = "UTF-8")))
+    return(NA_character_)
+  }
+  
+  result <- fromJSON(content(response, as = "text", encoding = "UTF-8"))
+  # cat("📦 Resultado bruto de la API:\n", 
+  #   jsonlite::toJSON(result, pretty = TRUE, auto_unbox = TRUE), 
+  #   "\n\n")
+  # str(result)
+  translated_text <- result$translations[[1]]$text
+ # cat("✅ Traducido:", translated_text, "\n\n--- Fin impresión OK ---\n\n")
+
+  return(translated_text)
+}
+```
+```{r}
+# --- Configuración Azure ---
+
+endpoint <- "https://api.cognitive.microsofttranslator.com/"
+region <- "global"
+
+# --- Subconjunto de prueba ---
+# Copia_Datos_Limpios_test <- head(Copia_Datos_Limpios, 10)
+
+# --- Aplicar traducción solo sobre las columnas necesarias ---
+Copia_Datos_Limpios$translated <- pmap_chr(
+  list(Copia_Datos_Limpios$review_text),
+  function(review_text) {
+    response <- translate_review_text(
+      text = review_text,
+      target = "en",
+      key = key,
+      endpoint = endpoint,
+      region = region
+    )
+    
+    if (is.null(response) || length(response) == 0) {
+      return(NA_character_)
+    } else {
+      print(response)  # para ver progreso
+      return(enc2utf8(as.character(response)))
+    }
+  }
+)
+```
+- marcar como Spam para frases que se repiten 
+
+```{r}
+Copia_Datos_Limpios$is_duplicated <-
+  duplicated(Copia_Datos_Limpios$translated) |
+  duplicated(Copia_Datos_Limpios$translated, fromLast = TRUE)
+
+Copia_Datos_Limpios$spam_verified <- ifelse(Copia_Datos_Limpios$is_duplicated, "spam", "ham")
+View(Copia_Datos_Limpios)
+```
+-Bolsa de palabras validas para una reseña
+```{r}
+# Bolsa de palabras válidas para reseñas
+valid_words <- c(
+  "great", "good", "excellent", "amazing", "love", "helpful", "easy", "fast",
+  "quality", "recommend", "happy", "satisfied", "improved", "useful", "perfect",
+  "bad", "terrible", "disappointed", "problem", "issue", "broken", "slow",
+  "update", "feature", "service", "support", "interface", "design", "experience",
+  "download", "install", "upgrade", "bug", "error", "crash", "fix", "solution"
+)
+```
+-Función para evaluación de texto valido
+```{r}
+# Función para evaluar si un texto es válido
+is_valid_review <- function(text) {
+  # Manejar valores nulos o vacíos
+  if (is.na(text) || text == "" || nchar(trimws(text)) == 0) {
+    return(FALSE) # Texto vacío o nulo no es válido
+  }
+  
+  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
+  text_lower <- tolower(as.character(text))
+  
+  # Verificar si alguna palabra válida aparece en el texto
+  has_valid_word <- any(sapply(valid_words, function(word) grepl(paste0("\\b", word, "\\b"), text_lower)))
+  
+  return(has_valid_word)
+}
+```
+- Evaluación del dataset
+```{r}
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  mutate(
+    spam_verified = case_when(
+      spam_verified != "spam" & 
+        detect_language(translated) == "en" & 
+        is_valid_review(translated) ~ "ham", # Ham si no es spam, está en inglés y contiene palabras válidas
+      
+      spam_verified != "spam" & 
+        detect_language(translated) == "en" & 
+        !is_valid_review(translated) ~ "spam", # Spam si no es spam, está en inglés pero no contiene palabras válidas
+      
+      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones anteriores
+    )
+  )
+```
+
+- Lista de lenguaje asociado al país
+```{r}
+# Función para obtener el idioma típico de un país
+get_language_from_country <- function(country) {
+  # Mapeo de países a códigos de idioma (basado en tu lista)
+  country_to_language <- c(
+    "China" = "zh-Hans",          # Chino simplificado
+    "Russia" = "ru",              # Ruso
+    "Spain" = "es",               # Español
+    "India" = "hi",               # Hindi (también podría ser "en" si se usa inglés comúnmente)
+    "South Korea" = "ko",         # Coreano
+    "Australia" = "en",           # Inglés
+    "Japan" = "ja",               # Japonés
+    "France" = "fr",              # Francés
+    "Italy" = "it",               # Italiano
+    "Germany" = "de",             # Alemán
+    "Vietnam" = "vi",             # Vietnamita
+    "Turkey" = "tr",              # Turco
+    "Thailand" = "th",            # Tailandés
+    "Brazil" = "pt",              # Portugués
+    "Nigeria" = "en",             # Inglés (oficial y ampliamente usado)
+    "United States" = "en",       # Inglés
+    "Bangladesh" = "bn",          # Bengalí
+    "Canada" = "en",              # Inglés (también podría ser "fr" para francés en Quebec)
+    "Indonesia" = "id",           # Indonesio
+    "Mexico" = "es",              # Español
+    "Malaysia" = "ms",            # Malayo
+    "Pakistan" = "ur",            # Urdu (también podría ser "en" si se usa inglés comúnmente)
+    "Philippines" = "fil",        # Filipino
+    "United Kingdom" = "en"       # Inglés
+  )
+  
+  # Devolver el idioma correspondiente al país
+  return(country_to_language[country])
+}
+```
+- Función detector de lenguaje
+```{r}
+# Función para detectar el idioma de un texto
+detect_language <- function(text) {
+  if (is.na(text) || text == "") {
+    return(NA) # Manejar valores nulos o vacíos
+  }
+  
+  # Detectar el idioma usando cld2
+  detected <- cld2::detect_language(text)
+  return(detected) # Devolver el código del idioma detectado
+}
+```
+
+
+- Se verifica que el lenguaje que se maneja es el mismo al del país(esta opción es opcional porque reduce los ham demasiado)
+
+```{r}
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  mutate(
+    detected_language = sapply(review_text, detect_language), # Detectar el idioma del texto
+    spam_verified = case_when(
+      spam_verified == "ham" & 
+        (
+          review_language != get_language_from_country(user_country) | # Idioma declarado no coincide con el país
+          detected_language != get_language_from_country(user_country) # Idioma detectado no coincide con el país
+        ) ~ "spam", # Marcar como spam si no coincide el idioma
+      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones
+    )
+  ) %>%
+  select(-detected_language) # Eliminar columna auxiliar si no es necesaria
+```
+- Muestra los valores que se consideran reseñas verdaderas
+```{r}
+unique(Copia_Datos_Limpios$spam_verified)
+values_verified <- Copia_Datos_Limpios %>% filter(spam_verified == "ham")
+View(values_verified)
+```
+- Verifica que idioma toma para los casos lorem ipsum
+```{r}
+detect_language("Eius odio facilis fuga distinctio eaque.")
+```
+- Función para evaluar si un texto esta en latin y por lo tanto es lorem ipsum
+```{r}
+## Función para detectar si un texto es latín (vectorizada)
+is_latin <- function(text) {
+  # Manejar valores nulos o vacíos (vectorizado)
+  if (all(is.na(text)) || all(text == "") || all(nchar(trimws(text)) == 0)) {
+    return(rep(FALSE, length(text))) # Devolver un vector de FALSE del mismo tamaño
+  }
+  
+  # Lista de palabras clave y sufijos típicos del latín
+  latin_keywords <- c(
+    "quis", "doloribus", "consequuntur", "perspiciatis", 
+    "tempora", "assumenda", "atque", "doloremque", 
+    "nobis", "voluptatem", "quidem", "esse"
+  )
+  
+  latin_suffixes <- c(
+    "us", "is", "um", "ae", "am", "ibus", "i", "o"
+  )
+  
+  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
+  text_lower <- tolower(as.character(text))
+  
+  # Verificar si alguna palabra clave aparece en el texto (vectorizado)
+  has_keywords <- sapply(text_lower, function(txt) {
+    any(sapply(latin_keywords, function(kw) grepl(kw, txt)))
+  })
+  
+  # Verificar si el texto contiene sufijos típicos del latín (vectorizado)
+  has_suffixes <- sapply(text_lower, function(txt) {
+    any(sapply(latin_suffixes, function(suffix) grepl(paste0("\\b\\w*", suffix, "\\b"), txt)))
+  })
+  
+  # Combinar las condiciones (vectorizado)
+  return(has_keywords | has_suffixes)
+}
+```
+
+```{r}
+is_latin("Nulla ullam quo iure repudiandae.")
+```
+- Clasificación de spam valores como lorem ipsum
+```{r}
+Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+  mutate(
+    spam_verified = case_when(
+      spam_verified == "ham" & is_latin(review_text) ~ "spam", # Marcar como spam si es latín
+      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones
+    )
+  )
+```
+
