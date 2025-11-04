@@ -149,6 +149,7 @@ Además, el modelo seleccionado para el análisis, Naive Bayes, no depende de ma
 install.packages("httr")
 install.packages("jsonlite")
 install.packages("cld2")
+install.packages("dotenv")
 ```
 ```{r}
 library(readr)
@@ -157,7 +158,8 @@ library(httr)
 library(jsonlite)
 library(purrr)
 library(rlang) 
-library(cld2)  
+library(cld2)
+library(dotenv)
 ```
 
 ```{r}
@@ -219,7 +221,6 @@ sapply(Copia_Datos_Limpios,class)
 ```
 ```{r}
 language <- unique(Copia_Datos_Limpios$review_language)
-print(languajes)
 typeof(language)
 
 ```
@@ -271,9 +272,11 @@ translate_review_text <- function(text, target = "en", key, endpoint, region = "
   return(translated_text)
 }
 ```
+
 ```{r}
 # --- Configuración Azure ---
-
+#load_dot_env()
+#key <- Sys.getenv("AZURE_KEY")
 endpoint <- "https://api.cognitive.microsofttranslator.com/"
 region <- "global"
 
