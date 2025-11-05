@@ -304,63 +304,6 @@ Copia_Datos_Limpios$translated <- pmap_chr(
   }
 )
 ```
-- marcar como Spam para frases que se repiten 
-
-```{r}
-Copia_Datos_Limpios$is_duplicated <-
-  duplicated(Copia_Datos_Limpios$translated) |
-  duplicated(Copia_Datos_Limpios$translated, fromLast = TRUE)
-
-Copia_Datos_Limpios$spam_verified <- ifelse(Copia_Datos_Limpios$is_duplicated, "spam", "ham")
-View(Copia_Datos_Limpios)
-```
--Bolsa de palabras validas para una reseña
-```{r}
-# Bolsa de palabras válidas para reseñas
-valid_words <- c(
-  "great", "good", "excellent", "amazing", "love", "helpful", "easy", "fast",
-  "quality", "recommend", "happy", "satisfied", "improved", "useful", "perfect",
-  "bad", "terrible", "disappointed", "problem", "issue", "broken", "slow",
-  "update", "feature", "service", "support", "interface", "design", "experience",
-  "download", "install", "upgrade", "bug", "error", "crash", "fix", "solution"
-)
-```
--Función para evaluación de texto valido
-```{r}
-# Función para evaluar si un texto es válido
-is_valid_review <- function(text) {
-  # Manejar valores nulos o vacíos
-  if (is.na(text) || text == "" || nchar(trimws(text)) == 0) {
-    return(FALSE) # Texto vacío o nulo no es válido
-  }
-  
-  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
-  text_lower <- tolower(as.character(text))
-  
-  # Verificar si alguna palabra válida aparece en el texto
-  has_valid_word <- any(sapply(valid_words, function(word) grepl(paste0("\\b", word, "\\b"), text_lower)))
-  
-  return(has_valid_word)
-}
-```
-- Evaluación del dataset
-```{r}
-Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
-  mutate(
-    spam_verified = case_when(
-      spam_verified != "spam" & 
-        detect_language(translated) == "en" & 
-        is_valid_review(translated) ~ "ham", # Ham si no es spam, está en inglés y contiene palabras válidas
-      
-      spam_verified != "spam" & 
-        detect_language(translated) == "en" & 
-        !is_valid_review(translated) ~ "spam", # Spam si no es spam, está en inglés pero no contiene palabras válidas
-      
-      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones anteriores
-    )
-  )
-```
-
 - Lista de lenguaje asociado al país
 ```{r}
 # Función para obtener el idioma típico de un país
@@ -397,20 +340,109 @@ get_language_from_country <- function(country) {
   return(country_to_language[country])
 }
 ```
+
+
 - Función detector de lenguaje
 ```{r}
-# Función para detectar el idioma de un texto
 detect_language <- function(text) {
-  if (is.na(text) || text == "") {
-    return(NA) # Manejar valores nulos o vacíos
+  # Asegurarse de que sea texto
+  text <- as.character(text)
+  text[is.na(text)] <- ""
+  
+  # Si está vacío, asignar NA
+  empty <- nchar(trimws(text)) == 0
+  result <- rep(NA_character_, length(text))
+  
+  # Detectar idioma solo donde haya texto
+  if (any(!empty)) {
+    result[!empty] <- cld2::detect_language(text[!empty])
   }
   
-  # Detectar el idioma usando cld2
-  detected <- cld2::detect_language(text)
-  return(detected) # Devolver el código del idioma detectado
+  # Detectar patrones típicos de Lorem Ipsum
+  lorem_pattern <- "(?i)\\blorem\\b|\\bipsum\\b|\\bdolor\\b|\\bamet\\b|\\bconsectetur\\b|\\badipiscing\\b|\\belit\\b|\\btempor\\b|\\blabore\\b|\\bnemo\\b|\\bhic\\b|\\bunde\\b|\\bvoluptate\\b|\\bcommodi\\b|\\bfacilis\\b|\\bsuscipit\\b|\\bquia\\b|\\btempora\\b|\\bexcepturi\\b|\\bdeleniti\\b"
+  
+  # Marcar como 'la' si contiene palabras de Lorem Ipsum
+  result[grepl(lorem_pattern, text)] <- "la"
+  
+  # Reemplazar NAs (no detectados) también por 'la'
+  result[is.na(result)] <- "la"
+  
+  return(result)
 }
+
+
+
 ```
 
+-Función para evaluación de texto valido
+
+```{r}
+# Función corregida y vectorizada para evaluar si un texto es válido
+is_valid_review <- function(text) {
+  # Asegurarse de que sea carácter
+  text <- as.character(text)
+
+  # Reemplazar NA por cadena vacía para evitar errores
+  text[is.na(text)] <- ""
+
+  # Eliminar espacios y pasar a minúsculas
+  text <- tolower(trimws(text))
+
+  # Texto vacío → FALSE
+  empty <- nchar(text) == 0
+
+  # Crear un solo patrón con todas las palabras válidas
+  pattern <- paste0("\\b(", paste(valid_words, collapse = "|"), ")\\b")
+
+  # Detectar si contiene alguna palabra válida
+  has_valid_word <- grepl(pattern, text)
+
+  # Resultado final
+  result <- !empty & has_valid_word
+  return(result)
+}
+
+```
+-Bolsa de palabras validas para una reseña
+```{r}
+# Bolsa de palabras válidas para reseñas
+valid_words <- c(
+  "great", "good", "excellent", "amazing", "love", "helpful", "easy", "fast",
+  "quality", "recommend", "happy", "satisfied", "improved", "useful", "perfect",
+  "bad", "terrible", "disappointed", "problem", "issue", "broken", "slow",
+  "update", "feature", "service", "support", "interface", "design", "experience",
+  "download", "install", "upgrade", "bug", "error", "crash", "fix", "solution"
+)
+```
+
+- Evaluación del dataset con la bolsa de palabras
+```{r}
+# Evaluación del dataset
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios %>%
+  mutate(
+    spam_flag = case_when(
+      detect_language(translated) == "en" & is_valid_review(translated) ~ "ham",   # inglés y válido
+      detect_language(translated) == "en" & !is_valid_review(translated) ~ "spam", # inglés pero no válido
+      TRUE ~ "spam"  # todo lo demás (no inglés, NA, etc.) se marca como spam
+    )
+  )
+```
+
+
+- marcar como Spam para frases que se repiten 
+
+```{r}
+# Crear la variable spam_flag según duplicados en 'translated'
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios_classified %>%
+  mutate(
+    spam_flag = ifelse(
+      duplicated(translated) | duplicated(translated, fromLast = TRUE),
+      "spam",
+      "ham"
+    )
+  )
+
+```
 
 - Se verifica que el lenguaje que se maneja es el mismo al del país(esta opción es opcional porque reduce los ham demasiado)
 
@@ -429,24 +461,21 @@ Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
   ) %>%
   select(-detected_language) # Eliminar columna auxiliar si no es necesaria
 ```
-- Muestra los valores que se consideran reseñas verdaderas
-```{r}
-unique(Copia_Datos_Limpios$spam_verified)
-values_verified <- Copia_Datos_Limpios %>% filter(spam_verified == "ham")
-View(values_verified)
-```
+
 - Verifica que idioma toma para los casos lorem ipsum
 ```{r}
 detect_language("Eius odio facilis fuga distinctio eaque.")
 ```
 - Función para evaluar si un texto esta en latin y por lo tanto es lorem ipsum
 ```{r}
-## Función para detectar si un texto es latín (vectorizada)
+
 is_latin <- function(text) {
-  # Manejar valores nulos o vacíos (vectorizado)
-  if (all(is.na(text)) || all(text == "") || all(nchar(trimws(text)) == 0)) {
-    return(rep(FALSE, length(text))) # Devolver un vector de FALSE del mismo tamaño
-  }
+  # Asegurarse de que sea texto
+  text <- as.character(text)
+  text[is.na(text)] <- ""
+  
+  # Detectar idioma usando la función anterior
+  detected_lang <- detect_language(text)
   
   # Lista de palabras clave y sufijos típicos del latín
   latin_keywords <- c(
@@ -454,27 +483,19 @@ is_latin <- function(text) {
     "tempora", "assumenda", "atque", "doloremque", 
     "nobis", "voluptatem", "quidem", "esse"
   )
+  latin_suffixes <- c("us", "is", "um", "ae", "am", "ibus", "i", "o")
   
-  latin_suffixes <- c(
-    "us", "is", "um", "ae", "am", "ibus", "i", "o"
-  )
+  # Convertir texto a minúsculas
+  text_lower <- tolower(text)
   
-  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
-  text_lower <- tolower(as.character(text))
+  # Buscar palabras y sufijos latinos
+  has_keywords <- sapply(text_lower, function(txt) any(sapply(latin_keywords, grepl, txt)))
+  has_suffixes <- sapply(text_lower, function(txt) any(sapply(latin_suffixes, function(s) grepl(paste0("\\b\\w*", s, "\\b"), txt))))
   
-  # Verificar si alguna palabra clave aparece en el texto (vectorizado)
-  has_keywords <- sapply(text_lower, function(txt) {
-    any(sapply(latin_keywords, function(kw) grepl(kw, txt)))
-  })
-  
-  # Verificar si el texto contiene sufijos típicos del latín (vectorizado)
-  has_suffixes <- sapply(text_lower, function(txt) {
-    any(sapply(latin_suffixes, function(suffix) grepl(paste0("\\b\\w*", suffix, "\\b"), txt)))
-  })
-  
-  # Combinar las condiciones (vectorizado)
-  return(has_keywords | has_suffixes)
+  # Marcar TRUE si el idioma detectado fue 'la' o si cumple los patrones
+  return(detected_lang == "la" | has_keywords | has_suffixes)
 }
+
 ```
 
 ```{r}
@@ -482,12 +503,41 @@ is_latin("Nulla ullam quo iure repudiandae.")
 ```
 - Clasificación de spam valores como lorem ipsum
 ```{r}
-Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios_classified %>%
   mutate(
-    spam_verified = case_when(
-      spam_verified == "ham" & is_latin(review_text) ~ "spam", # Marcar como spam si es latín
-      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones
+    spam_flag = case_when(
+      spam_flag == "ham" & is_latin(review_text) ~ "spam", # Marcar como spam si es latín
+      TRUE ~ spam_flag # Mantener el valor original si no se cumplen las condiciones
     )
   )
 ```
+- Muestra los valores que se consideran reseñas verdaderas
+```{r}
+unique(Copia_Datos_Limpios_classified$spam_verified)
+values_verified <- Copia_Datos_Limpios_classified %>% filter(spam_flag == "ham")
+View(values_verified)
+```
+
+```{r}
+Copia_Datos_Limpios_lorem <- Copia_Datos_Limpios %>%
+  # Detectar idioma una sola vez
+  mutate(lang = detect_language(review_text)) %>%
+  # Mantener solo textos válidos
+  filter(
+    # Caso 1: idioma inglés o español
+    lang %in% c("en", "es") |
+    # Caso 2: texto fue traducido (no es igual al original)
+    review_text != translated
+  ) %>%
+  # Excluir explícitamente los detectados como 'la' (latin/lorem)
+  filter(lang != "la") %>%
+  # Eliminar columna auxiliar
+  select(-lang)
+
+```
+
+```{r}
+rm(Copia_Datos_Limpios_lorem, Copia_Datos_Limpios_classified)
+```
+
 
