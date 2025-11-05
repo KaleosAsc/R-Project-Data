@@ -163,7 +163,7 @@ library(dotenv)
 ```
 
 ```{r}
-multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025.csv")
+multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025_extended.csv")
 View(multilingual_mobile_app_reviews_2025)
 ```
 
@@ -275,8 +275,8 @@ translate_review_text <- function(text, target = "en", key, endpoint, region = "
 
 ```{r}
 # --- Configuración Azure ---
-#load_dot_env()
-#key <- Sys.getenv("AZURE_KEY")
+# load_dot_env()
+# key <- Sys.getenv("AZURE_KEY")
 endpoint <- "https://api.cognitive.microsofttranslator.com/"
 region <- "global"
 
@@ -537,7 +537,7 @@ Copia_Datos_Limpios_lorem <- Copia_Datos_Limpios %>%
 ```
 
 ```{r}
-rm(Copia_Datos_Limpios_lorem, Copia_Datos_Limpios_classified)
+rm(Copia_Datos_Limpios_classified, multilingual_mobile_app_reviews_2025_extended)
 ```
 
 
