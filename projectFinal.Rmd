@@ -9,6 +9,18 @@ output:
 
 # 1. Introducción
 - Breve presentación del proyecto.
+
+El proyecto filtro-Reseñas, tiene como objetivo implementar un algoritmo capaz de detectar reseñas falsas o de tipo spam en aplicaciones moviles. 
+
+Ante el crecimiento global del mercado digital las reseñas en plataformas como google Play Store y App Store influyen directamente en la reputación y el posicionamiento de las aplicaciones. Sim embargo, la presencia de reseñas manipuladas, generados por bots o usuarios incentivados, distorsiona la percepción real de calidad y genera competencia desleal.
+
+Para abordar esta problemática, se emplea el algoritmo Naive Bayes Multinomial, ampliamente utilizado en clasificación de texto, aplicándolo sobre el dataset “Multilingual Mobile App Reviews Dataset 2025” de Kaggle.
+EL proceso incluye la limpieza y preprocesamiento del texto, la conversión de datos en vectores, y la evaluación del modelo mediante métricas como precisión, recall y F1-score.
+
+Con este enfoque, el proyecto busca demostrar la viabilidad del uso de modelos estadísticos simples para filtrar reseñas fraudulentas, contribuyendo a mejorar la transparencia y confianza en los sistemas de valoración de aplicaciones móviles.
+
+
+
 - Contextualización del problema y su relevancia.
 
 La influencia del internet ha cambiado la dinamicas de la relevancia de un servicio, las personas denominados en un rol de usuarios buscan la buena imagen a la hora descargar algun tipo de aplicación por medio de las reseñas que validan la experiencia del acceso a este mismo para tomar una decisión, en este caso las reseñas positivas pueden influir en prestigio asociado al negocio.
@@ -22,6 +34,21 @@ De esta manera, aplicar sistemas de mineria de datos para evaluar no veridicas r
 La importancia del estudio de los datos en este problema radica en comprender a fondo qué variables son realmente relevantes para el sistema de clasificación. No todas las características presentes en el conjunto de datos aportan información útil, y un análisis preliminar permite identificar aquellas que influyen directamente en la detección y clasificación de las reseñas. Este proceso no solo evita el ruido dentro del modelo, sino que también mejora la precisión y eficiencia del algoritmo, al centrarse en los patrones lingüísticos y semánticos más representativos. Además, el estudio de los datos permite detectar sesgos, inconsistencias o distribuciones desbalanceadas, factores que pueden comprometer la capacidad del sistema para generalizar correctamente ante nuevas reseñas. En conjunto, este análisis es un paso fundamental para garantizar la calidad, coherencia y validez del modelo de clasificación.
 
 - Valor agregado del análisis realizado.
+
+El análisis Realizada aporta un enfoque integral y aplicado al problema de las reseñas falsas en aplicaciones móviles, combinando técnicas estadísticas, procesamiento de lenguaje natural y análisis muiltilingue. 
+A diferencia de estudios previos centrados solo en inglés o en datos de comercio electrónico, este proyecto **aborda la detección de spam en un entorno global y multilingue, lo que refleja de manera más realista el comportamiento actual de los usuarios en tiendas de aplicaciones. 
+
+El uso del algoritmo **Naive Bayes Multinomial** proporciona un modelo ligero, interpretable y eficiente, capaz de manejar grandes volúmenes de texto con un costo computacional bajo. 
+
+Este enfoque permite identificar patrones lingüísticos y variables contextuales —como país, dispositivo, rating o verificación de compra— que influyen en la probabilidad de que una reseña sea falsa.
+
+Además, el proyecto agregar valor al: 
+-**Integrar variables adicionales** del dataset, para enriquecer la detección de spam. 
+
+-**Estandarizar el preprocesamiento multilingue**. 
+
+-**Contribuir a la transparencia digital**, ofreciendo un método que puede ser implementado, para mejorar la confianza de sus usuarios.
+
 
 # 3. Objetivos
 - **General**: Enunciar el objetivo principal del proyecto.
@@ -52,6 +79,26 @@ El modelo presente busca evaluar y predecir que tipo de contenido en reseña mul
 
 
 - Formular preguntas de investigación o hipótesis que orienten la minería de datos.
+
+Preguntas de investigación
+-1. ¿Qué características textuales y de usuario, influyen con mayor frecuencia en la generación de reseñas falsas o de tipo spam?
+-2. ¿Existen diferencias significativas en la proporción de reseñas falsas entre distintos idiomas o categorías de aplicación móviles?
+-3. ¿Puedes el algoritmo Naive Bayes Multinomial clasificar con precisión aceptable (superior al 70%) las reseñas falsas basándose en el contenido textual y variables complementarias?
+-4. ¿El comportamiento de las variables “verified_purchase” y “rating” muestra correlación con la probabilidad de que una reseña sea falsa?
+
+##Hipótesis de investigación
+-1. H1: Las reseñas con lenguaje repetitivo, puntuaciones extremas y sin verificación de compra presentan mayor probabilidad de ser clasificadas como spam. 
+-2. H2: El algoritmo naives bayes, es capaz de detectar reseñas falsas con un nivel de precision superior al 80%.
+-3. H3: Existen diferencias significativas entre idiomas en la frecuencia de reseñas falsas, debido a la diversidad linguística y cultural de los usuarios. 
+-4. H4: Variables demográficas Como edad y país del usuario influyen en el comportamiento de publicación de reseñas falsas o auténticas
+-5 H5: La combinación de texto y metadatos, mejora el rendimiento del modelo frente a usar solo texto. 
+
+Estas preguntas e hipótesis orienta a la minería de datos a: 
+- identificar patrones de comportamiento y lenguaje asociados a spam. 
+- Evaluar la capacidad predictiva del modelo naive bayes. 
+- Explorar relaciones ocultas entre variables cualitativas y cuantitativas.
+
+
 - Identificar la relevancia del problema y su impacto en la toma de decisiones.
 
 La relevancia del problema se centra en la necesidad de asegurar la autenticidad de las reseñas en plataformas digitales. La presencia de reseñas falsas o SPAM afecta la credibilidad de los sistemas de valoración y puede distorsionar la percepción que los usuarios tienen sobre un producto o servicio.
@@ -150,6 +197,10 @@ install.packages("httr")
 install.packages("jsonlite")
 install.packages("cld2")
 install.packages("dotenv")
+install.packages("tm")
+install.packages("e1071")
+install.packages("caret")
+
 ```
 ```{r}
 library(readr)
@@ -160,6 +211,9 @@ library(purrr)
 library(rlang) 
 library(cld2)
 library(dotenv)
+library(e1071)
+library(caret)
+library(tm)
 ```
 
 ```{r}
@@ -235,6 +289,7 @@ Copia_Datos_Limpios$review_language[Copia_Datos_Limpios$review_language == "zh"]
 unique(Copia_Datos_Limpios$review_language)
 
 ```
+
 ```{r}
 translate_review_text <- function(text, target = "en", key, endpoint, region = "global") {
   print(text)
@@ -275,8 +330,8 @@ translate_review_text <- function(text, target = "en", key, endpoint, region = "
 
 ```{r}
 # --- Configuración Azure ---
-# load_dot_env()
-# key <- Sys.getenv("AZURE_KEY")
+#load_dot_env()
+#key <- Sys.getenv("AZURE_KEY")
 endpoint <- "https://api.cognitive.microsofttranslator.com/"
 region <- "global"
 
@@ -304,6 +359,7 @@ Copia_Datos_Limpios$translated <- pmap_chr(
   }
 )
 ```
+
 - Lista de lenguaje asociado al país
 ```{r}
 # Función para obtener el idioma típico de un país
@@ -538,6 +594,128 @@ Copia_Datos_Limpios_lorem <- Copia_Datos_Limpios %>%
 
 ```{r}
 rm(Copia_Datos_Limpios_classified, multilingual_mobile_app_reviews_2025_extended)
+```
+
+- Entrenar el modelo 
+- Convertir la variable translate y spam_flag a factor
+```{r}
+Copia_Datos_Limpios_classified$translated <- as.factor(Copia_Datos_Limpios_classified$translated)
+Copia_Datos_Limpios_classified$spam_flag <- as.factor(Copia_Datos_Limpios_classified$spam_flag)
+
+```
+
+-subcojunto con texto y etiqueta
+```{r}
+text_data <- Copia_Datos_Limpios_classified[, c("translated", "spam_flag")]
+```
+
+-crear y limpiar con corpus
+```{r}
+corpus <- VCorpus(VectorSource(text_data$translated))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+corpus <- tm_map(corpus, stripWhitespace)
+```
+
+- crear la matrix de terminos (DTM)
+```{r}
+dtm_full <- DocumentTermMatrix(corpus)
+cat("Dimensiones DTM inicial (docs x términos):", dim(dtm_full), "\n")
+```
+
+-Reducir términos muy raros (evita columnas vacías)
+```{r}
+dtm_reduced <- removeSparseTerms(dtm_full, 0.99)
+cat("Dimensiones DTM reducidas", dim(dtm_reduced), "\n")
+```
+
+- dividr entrenamiento y prueba
+```{r}
+set.seed(123)
+index <- createDataPartition(text_data$spam_flag, p = 0.7, list = FALSE)
+
+train_dtm_mat <- as.matrix(dtm_reduced)[index, , drop=FALSE]
+test_dtm_mat <- as.matrix(dtm_reduced)[-index, , drop=FALSE]
+
+train_labels <- as.factor(text_data$spam_flag[index])
+test_labels <- as.factor(text_data$spam_flag)[-index]
+
+cat("Train:", dim(train_dtm_mat), "Test", dim(test_labels), "\n")
+```
+
+- Binamizar (0/1 si la palabra aparece)
+```{r}
+train_bin <- ifelse(train_dtm_mat > 0, 1, 0)
+test_bin  <- ifelse(test_dtm_mat > 0, 1, 0)
+```
+
+-alinear columnas 
+```{r}
+test_bin <- test_bin[, colnames(train_bin), drop = FALSE]
+```
+
+- convertir a dataframe númerico 
+```{r}
+train_df <- as.data.frame(lapply(as.data.frame(train_bin), as.numeric))
+test_df <- as.data.frame(lapply(as.data.frame(test_bin), as.numeric))
+
+cat("train_df:", dim(train_df), " test_df:", dim(test_df), "\n")
+```
+
+-Entrenar el modelo naive bayes
+```{r}
+modelo_nb <- naiveBayes(x = train_df, y = train_labels)
+```
+
+-Predecir 
+```{r}
+predecir <- predict(modelo_nb, newdata = test_df)
+```
+
+-Evaluar desempeño
+```{r}
+cat("\nMatriz de Confusión:\n")
+print(table(Predicción = predecir, Real = test_labels))
+
+# Métricas principales con caret
+confusion <- confusionMatrix(predecir, test_labels)
+print(confusion)
+```
+
+-Metricas individuales
+```{r}
+accuracy <- confusion$overall['Accuracy']
+precision <- confusion$byClass['Pos Pred Value']
+recall <- confusion$byClass['Sensitivity']
+f1 <- 2 * ((precision * recall) / (precision + recall))
+
+print(accuracy)
+print(precision)
+print(recall)
+print(f1)
+```
+
+- calcular MAE (Mean Absolute Error)
+```{r}
+#Convertimos etiquetas a 0/1
+true_numeric <- ifelse(test_labels == "spam", 1, 0)
+pred_numeric <- ifelse(predecir == "spam", 1, 0)
+mae <- mean(abs(true_numeric - pred_numeric))
+
+
+print(mae)
+```
+
+- Mostrar resultados Finales
+```{r}
+cat("\n--- Métricas de Evaluación ---\n")
+cat("Accuracy:", round(accuracy * 100, 2), "%\n")
+cat("Precision:", round(precision * 100, 2), "%\n")
+cat("Recall:", round(recall * 100, 2), "%\n")
+cat("F1-Score:", round(f1 * 100, 2), "%\n")
+cat("MAE:", round(mae, 4), "\n")
 ```
 
 
