@@ -127,9 +127,6 @@ Las variables eliminadas fueron:
 
 - **user_id**: Identificador único del usuario; no contribuye a la clasificación ni al análisis, y su inclusión puede generar ruido o riesgo de sesgo por usuario.
 
-- **num_helpful_votes**: Número de votos útiles que recibió una reseña; es un valor externo al contenido y puede estar influenciado por la visibilidad o popularidad, no por la autenticidad del texto.
-
-- **user_gender**: Género del usuario; presenta una proporción significativa de datos faltantes y no tiene un impacto directo sobre el contenido o tipo de reseña.
 
 - **app_version**: Versión de la aplicación reseñada; no afecta el análisis semántico ni la clasificación de reseñas, por lo que no es relevante para el modelo.
 
@@ -169,28 +166,100 @@ En este caso no se aplicó ningún proceso de normalización o estandarización 
 Además, el modelo seleccionado para el análisis, Naive Bayes, no depende de magnitudes o distancias entre variables, sino de distribuciones de probabilidad. Por tanto, modificar la escala de rating no aportaría mejoras en la capacidad predictiva del modelo ni en la consistencia de los resultados.
 
 - Codificación de variables categóricas (one-hot o label encoding).
+
+Dentro del marco de categorización de variables como la agregada **spam_flag**, se convirtio a factor entre las dos opciones que hay de "ham" y "spam", de tipo label encoding lo que nos permite clasificar el estado de autenticidad, para el entrenamiento del modelo.
+
+Además se aplico en variales que pueden afectar la verificada de si una reseña es spam o no, **verified_purchase** podria ser categorizada tambien dentro del marco label encoding al pasarlo a una variable factor(categorizada).
+
+
 - Creación de nuevas variables derivadas relevantes para el modelo.
 - Reducción de dimensionalidad, si aplica (PCA u otras técnicas).
 - Mostrar fragmentos de código en R y comparaciones “antes y después” de las tablas.
 
 ## 4.5 Minería de Datos
 - Seleccionar y justificar el algoritmo o técnica empleada (clasificación, regresión, clustering, etc.).
+
+En este caso del desarrollo, se escogio una tecnica de clasificación, por medio del algortimo de Naive Bayes, siendo machine learning de caracter supervisado para la tarea de clasificación de textos(en este caso aplicado a textos spam), basado en el teorema de Bayes que calcula la probabilidad condicional que una instancia pertenezca a una clase.
+
+Además dentro del algoritmo se aplico Vcorpus donde se permitio aplicar procesos de refinamiento al modelo, donde se paso todo el texto a minúsculas, quito puntuaciones, numeros y stopword en ingles, con una matriz para generar un repesentación númerica de la frecuencia de las palabras con reducción de terminos raros.
+
+Con esto se dividio el modelo de entre un 70% de entrenamiento y el 30% de prueba, donde se uso una binarización de terminos a la matriz de frecuencia, para finalizar con el entrenamiento del modelo con la finalidad de tener un algoritmo con alta refinación y respuesta de predicción.
+
+Para este caso, ese tipo de algoritmo nos da una predicción asertada para textos de manera categorizada, además que tiene una tolerancia del ruido, adecuado a problemas reales(efectivo en nuestro dataset que presenta datos reales con alta variabilidad por ser multilenguaje), además por su facil calculo de probabilidad, nos permite una facil interpretación de los datos.
+
+
+
+
 - Describir la división de datos (entrenamiento y prueba).
+
 - Presentar las métricas de evaluación (Accuracy, F1-Score, MAE, etc.).
+
+**Matriz de confusión**
+
+- 355 (TN): correos reales “ham” correctamente clasificados como no spam.
+
+- 4 (FN): correos spam que el modelo no detectó (falsos negativos).
+
+- 120 (FP): correos ham marcados erróneamente como spam (falsos positivos).
+
+- 339 (TP): correos spam correctamente clasificados.
+
+**Accuracy: 84.84 %**
+
+Este valor, mide el porcentaje de predicciones correctas, de 818 correos, 694 fueron clasificados correctamente,por lo cual se puede tomar como una buena clasificación global del modelo.
+
+**Precision: 98.89 %**
+
+Este valor, mide que tan confiables con las predicciones del modelo, es decir que el modelo donde clasifico que eran spam, la mayoria de veces acerto.
+
+**Recall: 74.74 %**
+
+Mide la capacidad del modelo para detectar todos los spam reales, el modelo identifica 3 de cada cuatro correos spam(falsos negativos).
+
+
+**F1-Score: 85.13 %**
+
+Es la media armónica entre precisión y recall donde equilibra ambas, se presenta un buen balance pero se podria mejorar su sensibilidad para no dejar pasar spam verdaderos.
+
+**MAE: 0.1516**
+
+Dentro de la métrica obtuvimos el siguiente rendimiento del modelo, el cual presenta un error del 15% para predecir los datos.
+
 - Incluir visualizaciones que respalden los resultados del modelo.
 
 ## 4.6 Interpretación y Evaluación
 - Analizar críticamente los resultados obtenidos.
 - Validar el conocimiento descubierto frente a las hipótesis y objetivos planteados.
+
+**Objetivo General**: Se genero un modelo de Naive Bayes que permite la predicción con alta eficacia para identificar en reseñar multilenguaje si una reseña de aplicación es spam o no.
+
+**Primer objetivo especifico**: Se referencia el anexo de la bolsa de palabras que nos permitio dar la clasificación de las palabras con caracteristicas de una reseña verdadera.
+
 - Evaluar el valor del conocimiento extraído para el contexto del problema.
 
 # 5. Conclusiones
 - Sintetizar los principales hallazgos.
 - Reflexionar sobre el proceso completo y sus limitaciones.
+
+El proceso nos permitio analizar los diferente factores que influencian a los modelos de machine learning supervisado, donde se destaca que dentro del proceso de manejo del dataset a pesar de que se aplico un proceso de limpieza de datos(valores nulos, imputación de datos, correción de datos incorrectos), se debieron generar unos criterios de evaluación para categorizar las reseñas.
+
+Debido a esto, el equipo de trabajo llego a la estimación que el 90% del dataset original proporcionado en el el marco de la clase era completamente spam(reseñas repetidas, traducciones que no concidian a una reseña verdadera, datos de tipo lorem ipsum).
+
+En solución de ese aspecto, se opto por la inseción de nuevos datos de reseñas verificados por el equipo que simulaban un comportamiento de una reseña comportamiento verdadero.
+
+Adicional, que se evaluo con el equipo que ante el aumento de criterios de el comportamiento del dataset, decrecia la calidad de predicción de los datos. Por lo tanto se opto por manejar solo el criterio de la bolsa de palabras.
+
+Por otra parte, el factor multi-lenguaje complicaba los aspecto de clasificación supervisada del equipo, por eso se decidio montar un sistema de traducción cloud(azure), que nos permitio traducir las reseñas un lenaguaje común para la aplicación de la bolsa de palabras para la vericidad de la clasificación.
+
+Por utlimo, a pesar de haber ya aplicado procesos de selección, limpieza y transformación de datos. El mismo modelos de Naive Bayes tiene proceso de limpieza, categorización númerica para refinar los procesos de predicción de los datos.
+
+
+
 - Proponer posibles trabajos futuros o mejoras.
 
 # 6. Anexos
-- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis.
+- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis,
+
 
 ```{r}
 install.packages("httr")
@@ -215,6 +284,11 @@ library(e1071)
 library(caret)
 library(tm)
 ```
+```{r}
+library(jsonlite)
+library(httr)
+```
+
 
 ```{r}
 multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025_extended.csv")
@@ -298,40 +372,34 @@ translate_review_text <- function(text, target = "en", key, endpoint, region = "
   url <- paste0(endpoint, "translate?api-version=3.0&to=", target)
   body <- list(list(Text = text))
   
-  response <- POST(
+  response <- httr::POST(
     url,
-    add_headers(
+    httr::add_headers(
       `Ocp-Apim-Subscription-Key` = key,
       `Ocp-Apim-Subscription-Region` = region,
       `Content-Type` = "application/json"
     ),
-    body = toJSON(body, auto_unbox = TRUE)
+    body = jsonlite::toJSON(body, auto_unbox = TRUE)
   )
   
-  
-  
   # Manejo de errores
-  if (status_code(response) != 200) {
-    warning(paste("Error:", content(response, "text", encoding = "UTF-8")))
+  if (httr::status_code(response) != 200) {
+    warning(paste("Error:", httr::content(response, "text", encoding = "UTF-8")))
     return(NA_character_)
   }
   
-  result <- fromJSON(content(response, as = "text", encoding = "UTF-8"))
-  # cat("📦 Resultado bruto de la API:\n", 
-  #   jsonlite::toJSON(result, pretty = TRUE, auto_unbox = TRUE), 
-  #   "\n\n")
-  # str(result)
+  result <- jsonlite::fromJSON(httr::content(response, as = "text", encoding = "UTF-8"))
+  
   translated_text <- result$translations[[1]]$text
- # cat("✅ Traducido:", translated_text, "\n\n--- Fin impresión OK ---\n\n")
-
   return(translated_text)
 }
+
 ```
 
 ```{r}
 # --- Configuración Azure ---
-#load_dot_env()
-#key <- Sys.getenv("AZURE_KEY")
+load_dot_env()
+key <- Sys.getenv("AZURE_KEY")
 endpoint <- "https://api.cognitive.microsofttranslator.com/"
 region <- "global"
 
@@ -710,12 +778,13 @@ print(mae)
 
 - Mostrar resultados Finales
 ```{r}
-cat("\n--- Métricas de Evaluación ---\n")
+cat("\n Métricas de Evaluación \n")
 cat("Accuracy:", round(accuracy * 100, 2), "%\n")
 cat("Precision:", round(precision * 100, 2), "%\n")
 cat("Recall:", round(recall * 100, 2), "%\n")
 cat("F1-Score:", round(f1 * 100, 2), "%\n")
 cat("MAE:", round(mae, 4), "\n")
+
 ```
 
 
