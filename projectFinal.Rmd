@@ -9,6 +9,18 @@ output:
 
 # 1. Introducción
 - Breve presentación del proyecto.
+
+El proyecto filtro-Reseñas, tiene como objetivo implementar un algoritmo capaz de detectar reseñas falsas o de tipo spam en aplicaciones moviles. 
+
+Ante el crecimiento global del mercado digital las reseñas en plataformas como google Play Store y App Store influyen directamente en la reputación y el posicionamiento de las aplicaciones. Sim embargo, la presencia de reseñas manipuladas, generados por bots o usuarios incentivados, distorsiona la percepción real de calidad y genera competencia desleal.
+
+Para abordar esta problemática, se emplea el algoritmo Naive Bayes Multinomial, ampliamente utilizado en clasificación de texto, aplicándolo sobre el dataset “Multilingual Mobile App Reviews Dataset 2025” de Kaggle.
+EL proceso incluye la limpieza y preprocesamiento del texto, la conversión de datos en vectores, y la evaluación del modelo mediante métricas como precisión, recall y F1-score.
+
+Con este enfoque, el proyecto busca demostrar la viabilidad del uso de modelos estadísticos simples para filtrar reseñas fraudulentas, contribuyendo a mejorar la transparencia y confianza en los sistemas de valoración de aplicaciones móviles.
+
+
+
 - Contextualización del problema y su relevancia.
 
 La influencia del internet ha cambiado la dinamicas de la relevancia de un servicio, las personas denominados en un rol de usuarios buscan la buena imagen a la hora descargar algun tipo de aplicación por medio de las reseñas que validan la experiencia del acceso a este mismo para tomar una decisión, en este caso las reseñas positivas pueden influir en prestigio asociado al negocio.
@@ -22,6 +34,21 @@ De esta manera, aplicar sistemas de mineria de datos para evaluar no veridicas r
 La importancia del estudio de los datos en este problema radica en comprender a fondo qué variables son realmente relevantes para el sistema de clasificación. No todas las características presentes en el conjunto de datos aportan información útil, y un análisis preliminar permite identificar aquellas que influyen directamente en la detección y clasificación de las reseñas. Este proceso no solo evita el ruido dentro del modelo, sino que también mejora la precisión y eficiencia del algoritmo, al centrarse en los patrones lingüísticos y semánticos más representativos. Además, el estudio de los datos permite detectar sesgos, inconsistencias o distribuciones desbalanceadas, factores que pueden comprometer la capacidad del sistema para generalizar correctamente ante nuevas reseñas. En conjunto, este análisis es un paso fundamental para garantizar la calidad, coherencia y validez del modelo de clasificación.
 
 - Valor agregado del análisis realizado.
+
+El análisis Realizada aporta un enfoque integral y aplicado al problema de las reseñas falsas en aplicaciones móviles, combinando técnicas estadísticas, procesamiento de lenguaje natural y análisis muiltilingue. 
+A diferencia de estudios previos centrados solo en inglés o en datos de comercio electrónico, este proyecto **aborda la detección de spam en un entorno global y multilingue, lo que refleja de manera más realista el comportamiento actual de los usuarios en tiendas de aplicaciones. 
+
+El uso del algoritmo **Naive Bayes Multinomial** proporciona un modelo ligero, interpretable y eficiente, capaz de manejar grandes volúmenes de texto con un costo computacional bajo. 
+
+Este enfoque permite identificar patrones lingüísticos y variables contextuales —como país, dispositivo, rating o verificación de compra— que influyen en la probabilidad de que una reseña sea falsa.
+
+Además, el proyecto agregar valor al: 
+-**Integrar variables adicionales** del dataset, para enriquecer la detección de spam. 
+
+-**Estandarizar el preprocesamiento multilingue**. 
+
+-**Contribuir a la transparencia digital**, ofreciendo un método que puede ser implementado, para mejorar la confianza de sus usuarios.
+
 
 # 3. Objetivos
 - **General**: Enunciar el objetivo principal del proyecto.
@@ -52,6 +79,26 @@ El modelo presente busca evaluar y predecir que tipo de contenido en reseña mul
 
 
 - Formular preguntas de investigación o hipótesis que orienten la minería de datos.
+
+Preguntas de investigación
+-1. ¿Qué características textuales y de usuario, influyen con mayor frecuencia en la generación de reseñas falsas o de tipo spam?
+-2. ¿Existen diferencias significativas en la proporción de reseñas falsas entre distintos idiomas o categorías de aplicación móviles?
+-3. ¿Puedes el algoritmo Naive Bayes Multinomial clasificar con precisión aceptable (superior al 70%) las reseñas falsas basándose en el contenido textual y variables complementarias?
+-4. ¿El comportamiento de las variables “verified_purchase” y “rating” muestra correlación con la probabilidad de que una reseña sea falsa?
+
+##Hipótesis de investigación
+-1. H1: Las reseñas con lenguaje repetitivo, puntuaciones extremas y sin verificación de compra presentan mayor probabilidad de ser clasificadas como spam. 
+-2. H2: El algoritmo naives bayes, es capaz de detectar reseñas falsas con un nivel de precision superior al 80%.
+-3. H3: Existen diferencias significativas entre idiomas en la frecuencia de reseñas falsas, debido a la diversidad linguística y cultural de los usuarios. 
+-4. H4: Variables demográficas Como edad y país del usuario influyen en el comportamiento de publicación de reseñas falsas o auténticas
+-5 H5: La combinación de texto y metadatos, mejora el rendimiento del modelo frente a usar solo texto. 
+
+Estas preguntas e hipótesis orienta a la minería de datos a: 
+- identificar patrones de comportamiento y lenguaje asociados a spam. 
+- Evaluar la capacidad predictiva del modelo naive bayes. 
+- Explorar relaciones ocultas entre variables cualitativas y cuantitativas.
+
+
 - Identificar la relevancia del problema y su impacto en la toma de decisiones.
 
 La relevancia del problema se centra en la necesidad de asegurar la autenticidad de las reseñas en plataformas digitales. La presencia de reseñas falsas o SPAM afecta la credibilidad de los sistemas de valoración y puede distorsionar la percepción que los usuarios tienen sobre un producto o servicio.
@@ -80,9 +127,6 @@ Las variables eliminadas fueron:
 
 - **user_id**: Identificador único del usuario; no contribuye a la clasificación ni al análisis, y su inclusión puede generar ruido o riesgo de sesgo por usuario.
 
-- **num_helpful_votes**: Número de votos útiles que recibió una reseña; es un valor externo al contenido y puede estar influenciado por la visibilidad o popularidad, no por la autenticidad del texto.
-
-- **user_gender**: Género del usuario; presenta una proporción significativa de datos faltantes y no tiene un impacto directo sobre el contenido o tipo de reseña.
 
 - **app_version**: Versión de la aplicación reseñada; no afecta el análisis semántico ni la clasificación de reseñas, por lo que no es relevante para el modelo.
 
@@ -122,34 +166,110 @@ En este caso no se aplicó ningún proceso de normalización o estandarización 
 Además, el modelo seleccionado para el análisis, Naive Bayes, no depende de magnitudes o distancias entre variables, sino de distribuciones de probabilidad. Por tanto, modificar la escala de rating no aportaría mejoras en la capacidad predictiva del modelo ni en la consistencia de los resultados.
 
 - Codificación de variables categóricas (one-hot o label encoding).
+
+Dentro del marco de categorización de variables como la agregada **spam_flag**, se convirtio a factor entre las dos opciones que hay de "ham" y "spam", de tipo label encoding lo que nos permite clasificar el estado de autenticidad, para el entrenamiento del modelo.
+
+Además se aplico en variales que pueden afectar la verificada de si una reseña es spam o no, **verified_purchase** podria ser categorizada tambien dentro del marco label encoding al pasarlo a una variable factor(categorizada).
+
+
 - Creación de nuevas variables derivadas relevantes para el modelo.
 - Reducción de dimensionalidad, si aplica (PCA u otras técnicas).
 - Mostrar fragmentos de código en R y comparaciones “antes y después” de las tablas.
 
 ## 4.5 Minería de Datos
 - Seleccionar y justificar el algoritmo o técnica empleada (clasificación, regresión, clustering, etc.).
+
+En este caso del desarrollo, se escogio una tecnica de clasificación, por medio del algortimo de Naive Bayes, siendo machine learning de caracter supervisado para la tarea de clasificación de textos(en este caso aplicado a textos spam), basado en el teorema de Bayes que calcula la probabilidad condicional que una instancia pertenezca a una clase.
+
+Además dentro del algoritmo se aplico Vcorpus donde se permitio aplicar procesos de refinamiento al modelo, donde se paso todo el texto a minúsculas, quito puntuaciones, numeros y stopword en ingles, con una matriz para generar un repesentación númerica de la frecuencia de las palabras con reducción de terminos raros.
+
+Con esto se dividio el modelo de entre un 70% de entrenamiento y el 30% de prueba, donde se uso una binarización de terminos a la matriz de frecuencia, para finalizar con el entrenamiento del modelo con la finalidad de tener un algoritmo con alta refinación y respuesta de predicción.
+
+Para este caso, ese tipo de algoritmo nos da una predicción asertada para textos de manera categorizada, además que tiene una tolerancia del ruido, adecuado a problemas reales(efectivo en nuestro dataset que presenta datos reales con alta variabilidad por ser multilenguaje), además por su facil calculo de probabilidad, nos permite una facil interpretación de los datos.
+
+
+
+
 - Describir la división de datos (entrenamiento y prueba).
+
 - Presentar las métricas de evaluación (Accuracy, F1-Score, MAE, etc.).
+
+**Matriz de confusión**
+
+- 355 (TN): correos reales “ham” correctamente clasificados como no spam.
+
+- 4 (FN): correos spam que el modelo no detectó (falsos negativos).
+
+- 120 (FP): correos ham marcados erróneamente como spam (falsos positivos).
+
+- 339 (TP): correos spam correctamente clasificados.
+
+**Accuracy: 84.84 %**
+
+Este valor, mide el porcentaje de predicciones correctas, de 818 correos, 694 fueron clasificados correctamente,por lo cual se puede tomar como una buena clasificación global del modelo.
+
+**Precision: 98.89 %**
+
+Este valor, mide que tan confiables con las predicciones del modelo, es decir que el modelo donde clasifico que eran spam, la mayoria de veces acerto.
+
+**Recall: 74.74 %**
+
+Mide la capacidad del modelo para detectar todos los spam reales, el modelo identifica 3 de cada cuatro correos spam(falsos negativos).
+
+
+**F1-Score: 85.13 %**
+
+Es la media armónica entre precisión y recall donde equilibra ambas, se presenta un buen balance pero se podria mejorar su sensibilidad para no dejar pasar spam verdaderos.
+
+**MAE: 0.1516**
+
+Dentro de la métrica obtuvimos el siguiente rendimiento del modelo, el cual presenta un error del 15% para predecir los datos.
+
 - Incluir visualizaciones que respalden los resultados del modelo.
 
 ## 4.6 Interpretación y Evaluación
 - Analizar críticamente los resultados obtenidos.
 - Validar el conocimiento descubierto frente a las hipótesis y objetivos planteados.
+
+**Objetivo General**: Se genero un modelo de Naive Bayes que permite la predicción con alta eficacia para identificar en reseñar multilenguaje si una reseña de aplicación es spam o no.
+
+**Primer objetivo especifico**: Se referencia el anexo de la bolsa de palabras que nos permitio dar la clasificación de las palabras con caracteristicas de una reseña verdadera.
+
 - Evaluar el valor del conocimiento extraído para el contexto del problema.
 
 # 5. Conclusiones
 - Sintetizar los principales hallazgos.
 - Reflexionar sobre el proceso completo y sus limitaciones.
+
+El proceso nos permitio analizar los diferente factores que influencian a los modelos de machine learning supervisado, donde se destaca que dentro del proceso de manejo del dataset a pesar de que se aplico un proceso de limpieza de datos(valores nulos, imputación de datos, correción de datos incorrectos), se debieron generar unos criterios de evaluación para categorizar las reseñas.
+
+Debido a esto, el equipo de trabajo llego a la estimación que el 90% del dataset original proporcionado en el el marco de la clase era completamente spam(reseñas repetidas, traducciones que no concidian a una reseña verdadera, datos de tipo lorem ipsum).
+
+En solución de ese aspecto, se opto por la inseción de nuevos datos de reseñas verificados por el equipo que simulaban un comportamiento de una reseña comportamiento verdadero.
+
+Adicional, que se evaluo con el equipo que ante el aumento de criterios de el comportamiento del dataset, decrecia la calidad de predicción de los datos. Por lo tanto se opto por manejar solo el criterio de la bolsa de palabras.
+
+Por otra parte, el factor multi-lenguaje complicaba los aspecto de clasificación supervisada del equipo, por eso se decidio montar un sistema de traducción cloud(azure), que nos permitio traducir las reseñas un lenaguaje común para la aplicación de la bolsa de palabras para la vericidad de la clasificación.
+
+Por utlimo, a pesar de haber ya aplicado procesos de selección, limpieza y transformación de datos. El mismo modelos de Naive Bayes tiene proceso de limpieza, categorización númerica para refinar los procesos de predicción de los datos.
+
+
+
 - Proponer posibles trabajos futuros o mejoras.
 
 # 6. Anexos
-- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis.
+- Gráficos, tablas, fragmentos de código, resultados adicionales que complementen el análisis,
+
 
 ```{r}
 install.packages("httr")
 install.packages("jsonlite")
 install.packages("cld2")
 install.packages("dotenv")
+install.packages("tm")
+install.packages("e1071")
+install.packages("caret")
+
 ```
 ```{r}
 library(readr)
@@ -160,10 +280,18 @@ library(purrr)
 library(rlang) 
 library(cld2)
 library(dotenv)
+library(e1071)
+library(caret)
+library(tm)
+```
+```{r}
+library(jsonlite)
+library(httr)
 ```
 
+
 ```{r}
-multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025.csv")
+multilingual_mobile_app_reviews_2025 <- read_csv("multilingual_mobile_app_reviews_2025_extended.csv")
 View(multilingual_mobile_app_reviews_2025)
 ```
 
@@ -235,6 +363,7 @@ Copia_Datos_Limpios$review_language[Copia_Datos_Limpios$review_language == "zh"]
 unique(Copia_Datos_Limpios$review_language)
 
 ```
+
 ```{r}
 translate_review_text <- function(text, target = "en", key, endpoint, region = "global") {
   print(text)
@@ -243,40 +372,34 @@ translate_review_text <- function(text, target = "en", key, endpoint, region = "
   url <- paste0(endpoint, "translate?api-version=3.0&to=", target)
   body <- list(list(Text = text))
   
-  response <- POST(
+  response <- httr::POST(
     url,
-    add_headers(
+    httr::add_headers(
       `Ocp-Apim-Subscription-Key` = key,
       `Ocp-Apim-Subscription-Region` = region,
       `Content-Type` = "application/json"
     ),
-    body = toJSON(body, auto_unbox = TRUE)
+    body = jsonlite::toJSON(body, auto_unbox = TRUE)
   )
   
-  
-  
   # Manejo de errores
-  if (status_code(response) != 200) {
-    warning(paste("Error:", content(response, "text", encoding = "UTF-8")))
+  if (httr::status_code(response) != 200) {
+    warning(paste("Error:", httr::content(response, "text", encoding = "UTF-8")))
     return(NA_character_)
   }
   
-  result <- fromJSON(content(response, as = "text", encoding = "UTF-8"))
-  # cat("📦 Resultado bruto de la API:\n", 
-  #   jsonlite::toJSON(result, pretty = TRUE, auto_unbox = TRUE), 
-  #   "\n\n")
-  # str(result)
+  result <- jsonlite::fromJSON(httr::content(response, as = "text", encoding = "UTF-8"))
+  
   translated_text <- result$translations[[1]]$text
- # cat("✅ Traducido:", translated_text, "\n\n--- Fin impresión OK ---\n\n")
-
   return(translated_text)
 }
+
 ```
 
 ```{r}
 # --- Configuración Azure ---
-#load_dot_env()
-#key <- Sys.getenv("AZURE_KEY")
+load_dot_env()
+key <- Sys.getenv("AZURE_KEY")
 endpoint <- "https://api.cognitive.microsofttranslator.com/"
 region <- "global"
 
@@ -303,62 +426,6 @@ Copia_Datos_Limpios$translated <- pmap_chr(
     }
   }
 )
-```
-- marcar como Spam para frases que se repiten 
-
-```{r}
-Copia_Datos_Limpios$is_duplicated <-
-  duplicated(Copia_Datos_Limpios$translated) |
-  duplicated(Copia_Datos_Limpios$translated, fromLast = TRUE)
-
-Copia_Datos_Limpios$spam_verified <- ifelse(Copia_Datos_Limpios$is_duplicated, "spam", "ham")
-View(Copia_Datos_Limpios)
-```
--Bolsa de palabras validas para una reseña
-```{r}
-# Bolsa de palabras válidas para reseñas
-valid_words <- c(
-  "great", "good", "excellent", "amazing", "love", "helpful", "easy", "fast",
-  "quality", "recommend", "happy", "satisfied", "improved", "useful", "perfect",
-  "bad", "terrible", "disappointed", "problem", "issue", "broken", "slow",
-  "update", "feature", "service", "support", "interface", "design", "experience",
-  "download", "install", "upgrade", "bug", "error", "crash", "fix", "solution"
-)
-```
--Función para evaluación de texto valido
-```{r}
-# Función para evaluar si un texto es válido
-is_valid_review <- function(text) {
-  # Manejar valores nulos o vacíos
-  if (is.na(text) || text == "" || nchar(trimws(text)) == 0) {
-    return(FALSE) # Texto vacío o nulo no es válido
-  }
-  
-  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
-  text_lower <- tolower(as.character(text))
-  
-  # Verificar si alguna palabra válida aparece en el texto
-  has_valid_word <- any(sapply(valid_words, function(word) grepl(paste0("\\b", word, "\\b"), text_lower)))
-  
-  return(has_valid_word)
-}
-```
-- Evaluación del dataset
-```{r}
-Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
-  mutate(
-    spam_verified = case_when(
-      spam_verified != "spam" & 
-        detect_language(translated) == "en" & 
-        is_valid_review(translated) ~ "ham", # Ham si no es spam, está en inglés y contiene palabras válidas
-      
-      spam_verified != "spam" & 
-        detect_language(translated) == "en" & 
-        !is_valid_review(translated) ~ "spam", # Spam si no es spam, está en inglés pero no contiene palabras válidas
-      
-      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones anteriores
-    )
-  )
 ```
 
 - Lista de lenguaje asociado al país
@@ -397,20 +464,109 @@ get_language_from_country <- function(country) {
   return(country_to_language[country])
 }
 ```
+
+
 - Función detector de lenguaje
 ```{r}
-# Función para detectar el idioma de un texto
 detect_language <- function(text) {
-  if (is.na(text) || text == "") {
-    return(NA) # Manejar valores nulos o vacíos
+  # Asegurarse de que sea texto
+  text <- as.character(text)
+  text[is.na(text)] <- ""
+  
+  # Si está vacío, asignar NA
+  empty <- nchar(trimws(text)) == 0
+  result <- rep(NA_character_, length(text))
+  
+  # Detectar idioma solo donde haya texto
+  if (any(!empty)) {
+    result[!empty] <- cld2::detect_language(text[!empty])
   }
   
-  # Detectar el idioma usando cld2
-  detected <- cld2::detect_language(text)
-  return(detected) # Devolver el código del idioma detectado
+  # Detectar patrones típicos de Lorem Ipsum
+  lorem_pattern <- "(?i)\\blorem\\b|\\bipsum\\b|\\bdolor\\b|\\bamet\\b|\\bconsectetur\\b|\\badipiscing\\b|\\belit\\b|\\btempor\\b|\\blabore\\b|\\bnemo\\b|\\bhic\\b|\\bunde\\b|\\bvoluptate\\b|\\bcommodi\\b|\\bfacilis\\b|\\bsuscipit\\b|\\bquia\\b|\\btempora\\b|\\bexcepturi\\b|\\bdeleniti\\b"
+  
+  # Marcar como 'la' si contiene palabras de Lorem Ipsum
+  result[grepl(lorem_pattern, text)] <- "la"
+  
+  # Reemplazar NAs (no detectados) también por 'la'
+  result[is.na(result)] <- "la"
+  
+  return(result)
 }
+
+
+
 ```
 
+-Función para evaluación de texto valido
+
+```{r}
+# Función corregida y vectorizada para evaluar si un texto es válido
+is_valid_review <- function(text) {
+  # Asegurarse de que sea carácter
+  text <- as.character(text)
+
+  # Reemplazar NA por cadena vacía para evitar errores
+  text[is.na(text)] <- ""
+
+  # Eliminar espacios y pasar a minúsculas
+  text <- tolower(trimws(text))
+
+  # Texto vacío → FALSE
+  empty <- nchar(text) == 0
+
+  # Crear un solo patrón con todas las palabras válidas
+  pattern <- paste0("\\b(", paste(valid_words, collapse = "|"), ")\\b")
+
+  # Detectar si contiene alguna palabra válida
+  has_valid_word <- grepl(pattern, text)
+
+  # Resultado final
+  result <- !empty & has_valid_word
+  return(result)
+}
+
+```
+-Bolsa de palabras validas para una reseña
+```{r}
+# Bolsa de palabras válidas para reseñas
+valid_words <- c(
+  "great", "good", "excellent", "amazing", "love", "helpful", "easy", "fast",
+  "quality", "recommend", "happy", "satisfied", "improved", "useful", "perfect",
+  "bad", "terrible", "disappointed", "problem", "issue", "broken", "slow",
+  "update", "feature", "service", "support", "interface", "design", "experience",
+  "download", "install", "upgrade", "bug", "error", "crash", "fix", "solution"
+)
+```
+
+- Evaluación del dataset con la bolsa de palabras
+```{r}
+# Evaluación del dataset
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios %>%
+  mutate(
+    spam_flag = case_when(
+      detect_language(translated) == "en" & is_valid_review(translated) ~ "ham",   # inglés y válido
+      detect_language(translated) == "en" & !is_valid_review(translated) ~ "spam", # inglés pero no válido
+      TRUE ~ "spam"  # todo lo demás (no inglés, NA, etc.) se marca como spam
+    )
+  )
+```
+
+
+- marcar como Spam para frases que se repiten 
+
+```{r}
+# Crear la variable spam_flag según duplicados en 'translated'
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios_classified %>%
+  mutate(
+    spam_flag = ifelse(
+      duplicated(translated) | duplicated(translated, fromLast = TRUE),
+      "spam",
+      "ham"
+    )
+  )
+
+```
 
 - Se verifica que el lenguaje que se maneja es el mismo al del país(esta opción es opcional porque reduce los ham demasiado)
 
@@ -429,24 +585,21 @@ Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
   ) %>%
   select(-detected_language) # Eliminar columna auxiliar si no es necesaria
 ```
-- Muestra los valores que se consideran reseñas verdaderas
-```{r}
-unique(Copia_Datos_Limpios$spam_verified)
-values_verified <- Copia_Datos_Limpios %>% filter(spam_verified == "ham")
-View(values_verified)
-```
+
 - Verifica que idioma toma para los casos lorem ipsum
 ```{r}
 detect_language("Eius odio facilis fuga distinctio eaque.")
 ```
 - Función para evaluar si un texto esta en latin y por lo tanto es lorem ipsum
 ```{r}
-## Función para detectar si un texto es latín (vectorizada)
+
 is_latin <- function(text) {
-  # Manejar valores nulos o vacíos (vectorizado)
-  if (all(is.na(text)) || all(text == "") || all(nchar(trimws(text)) == 0)) {
-    return(rep(FALSE, length(text))) # Devolver un vector de FALSE del mismo tamaño
-  }
+  # Asegurarse de que sea texto
+  text <- as.character(text)
+  text[is.na(text)] <- ""
+  
+  # Detectar idioma usando la función anterior
+  detected_lang <- detect_language(text)
   
   # Lista de palabras clave y sufijos típicos del latín
   latin_keywords <- c(
@@ -454,27 +607,19 @@ is_latin <- function(text) {
     "tempora", "assumenda", "atque", "doloremque", 
     "nobis", "voluptatem", "quidem", "esse"
   )
+  latin_suffixes <- c("us", "is", "um", "ae", "am", "ibus", "i", "o")
   
-  latin_suffixes <- c(
-    "us", "is", "um", "ae", "am", "ibus", "i", "o"
-  )
+  # Convertir texto a minúsculas
+  text_lower <- tolower(text)
   
-  # Convertir el texto a minúsculas para hacer la comparación insensible a mayúsculas/minúsculas
-  text_lower <- tolower(as.character(text))
+  # Buscar palabras y sufijos latinos
+  has_keywords <- sapply(text_lower, function(txt) any(sapply(latin_keywords, grepl, txt)))
+  has_suffixes <- sapply(text_lower, function(txt) any(sapply(latin_suffixes, function(s) grepl(paste0("\\b\\w*", s, "\\b"), txt))))
   
-  # Verificar si alguna palabra clave aparece en el texto (vectorizado)
-  has_keywords <- sapply(text_lower, function(txt) {
-    any(sapply(latin_keywords, function(kw) grepl(kw, txt)))
-  })
-  
-  # Verificar si el texto contiene sufijos típicos del latín (vectorizado)
-  has_suffixes <- sapply(text_lower, function(txt) {
-    any(sapply(latin_suffixes, function(suffix) grepl(paste0("\\b\\w*", suffix, "\\b"), txt)))
-  })
-  
-  # Combinar las condiciones (vectorizado)
-  return(has_keywords | has_suffixes)
+  # Marcar TRUE si el idioma detectado fue 'la' o si cumple los patrones
+  return(detected_lang == "la" | has_keywords | has_suffixes)
 }
+
 ```
 
 ```{r}
@@ -482,12 +627,164 @@ is_latin("Nulla ullam quo iure repudiandae.")
 ```
 - Clasificación de spam valores como lorem ipsum
 ```{r}
-Copia_Datos_Limpios <- Copia_Datos_Limpios %>%
+Copia_Datos_Limpios_classified <- Copia_Datos_Limpios_classified %>%
   mutate(
-    spam_verified = case_when(
-      spam_verified == "ham" & is_latin(review_text) ~ "spam", # Marcar como spam si es latín
-      TRUE ~ spam_verified # Mantener el valor original si no se cumplen las condiciones
+    spam_flag = case_when(
+      spam_flag == "ham" & is_latin(review_text) ~ "spam", # Marcar como spam si es latín
+      TRUE ~ spam_flag # Mantener el valor original si no se cumplen las condiciones
     )
   )
 ```
+- Muestra los valores que se consideran reseñas verdaderas
+```{r}
+unique(Copia_Datos_Limpios_classified$spam_verified)
+values_verified <- Copia_Datos_Limpios_classified %>% filter(spam_flag == "ham")
+View(values_verified)
+```
+
+```{r}
+Copia_Datos_Limpios_lorem <- Copia_Datos_Limpios %>%
+  # Detectar idioma una sola vez
+  mutate(lang = detect_language(review_text)) %>%
+  # Mantener solo textos válidos
+  filter(
+    # Caso 1: idioma inglés o español
+    lang %in% c("en", "es") |
+    # Caso 2: texto fue traducido (no es igual al original)
+    review_text != translated
+  ) %>%
+  # Excluir explícitamente los detectados como 'la' (latin/lorem)
+  filter(lang != "la") %>%
+  # Eliminar columna auxiliar
+  select(-lang)
+
+```
+
+```{r}
+rm(Copia_Datos_Limpios_classified, multilingual_mobile_app_reviews_2025_extended)
+```
+
+- Entrenar el modelo 
+- Convertir la variable translate y spam_flag a factor
+```{r}
+Copia_Datos_Limpios_classified$translated <- as.factor(Copia_Datos_Limpios_classified$translated)
+Copia_Datos_Limpios_classified$spam_flag <- as.factor(Copia_Datos_Limpios_classified$spam_flag)
+
+```
+
+-subcojunto con texto y etiqueta
+```{r}
+text_data <- Copia_Datos_Limpios_classified[, c("translated", "spam_flag")]
+```
+
+-crear y limpiar con corpus
+```{r}
+corpus <- VCorpus(VectorSource(text_data$translated))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+corpus <- tm_map(corpus, stripWhitespace)
+```
+
+- crear la matrix de terminos (DTM)
+```{r}
+dtm_full <- DocumentTermMatrix(corpus)
+cat("Dimensiones DTM inicial (docs x términos):", dim(dtm_full), "\n")
+```
+
+-Reducir términos muy raros (evita columnas vacías)
+```{r}
+dtm_reduced <- removeSparseTerms(dtm_full, 0.99)
+cat("Dimensiones DTM reducidas", dim(dtm_reduced), "\n")
+```
+
+- dividr entrenamiento y prueba
+```{r}
+set.seed(123)
+index <- createDataPartition(text_data$spam_flag, p = 0.7, list = FALSE)
+
+train_dtm_mat <- as.matrix(dtm_reduced)[index, , drop=FALSE]
+test_dtm_mat <- as.matrix(dtm_reduced)[-index, , drop=FALSE]
+
+train_labels <- as.factor(text_data$spam_flag[index])
+test_labels <- as.factor(text_data$spam_flag)[-index]
+
+cat("Train:", dim(train_dtm_mat), "Test", dim(test_labels), "\n")
+```
+
+- Binamizar (0/1 si la palabra aparece)
+```{r}
+train_bin <- ifelse(train_dtm_mat > 0, 1, 0)
+test_bin  <- ifelse(test_dtm_mat > 0, 1, 0)
+```
+
+-alinear columnas 
+```{r}
+test_bin <- test_bin[, colnames(train_bin), drop = FALSE]
+```
+
+- convertir a dataframe númerico 
+```{r}
+train_df <- as.data.frame(lapply(as.data.frame(train_bin), as.numeric))
+test_df <- as.data.frame(lapply(as.data.frame(test_bin), as.numeric))
+
+cat("train_df:", dim(train_df), " test_df:", dim(test_df), "\n")
+```
+
+-Entrenar el modelo naive bayes
+```{r}
+modelo_nb <- naiveBayes(x = train_df, y = train_labels)
+```
+
+-Predecir 
+```{r}
+predecir <- predict(modelo_nb, newdata = test_df)
+```
+
+-Evaluar desempeño
+```{r}
+cat("\nMatriz de Confusión:\n")
+print(table(Predicción = predecir, Real = test_labels))
+
+# Métricas principales con caret
+confusion <- confusionMatrix(predecir, test_labels)
+print(confusion)
+```
+
+-Metricas individuales
+```{r}
+accuracy <- confusion$overall['Accuracy']
+precision <- confusion$byClass['Pos Pred Value']
+recall <- confusion$byClass['Sensitivity']
+f1 <- 2 * ((precision * recall) / (precision + recall))
+
+print(accuracy)
+print(precision)
+print(recall)
+print(f1)
+```
+
+- calcular MAE (Mean Absolute Error)
+```{r}
+#Convertimos etiquetas a 0/1
+true_numeric <- ifelse(test_labels == "spam", 1, 0)
+pred_numeric <- ifelse(predecir == "spam", 1, 0)
+mae <- mean(abs(true_numeric - pred_numeric))
+
+
+print(mae)
+```
+
+- Mostrar resultados Finales
+```{r}
+cat("\n Métricas de Evaluación \n")
+cat("Accuracy:", round(accuracy * 100, 2), "%\n")
+cat("Precision:", round(precision * 100, 2), "%\n")
+cat("Recall:", round(recall * 100, 2), "%\n")
+cat("F1-Score:", round(f1 * 100, 2), "%\n")
+cat("MAE:", round(mae, 4), "\n")
+
+```
+
 
