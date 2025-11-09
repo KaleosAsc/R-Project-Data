@@ -317,9 +317,34 @@ ggplot(metricas, aes(x = Metrica, y = Valor, fill = Metrica)) +
 
 - Validar el conocimiento descubierto frente a las hipótesis y objetivos planteados.
 
-**Objetivo General**: Se genero un modelo de Naive Bayes que permite la predicción con alta eficacia para identificar en reseñar multilenguaje si una reseña de aplicación es spam o no.
+**Objetivo General**: Desarrollar un modelo de clasificación basado en Naive Bayes que permita predecir de manera eficaz si una reseña multilingüe corresponde a spam o a una reseña legítima
 
-**Primer objetivo especifico**: Se referencia el anexo de la bolsa de palabras que nos permitio dar la clasificación de las palabras con caracteristicas de una reseña verdadera.
+**Primer objetivo especifico**: 
+-1 Preprocesar y transformar los datos textuales, incluyendo la traducción, limpieza y normalización del texto, con el fin de obtener un corpus homogéneo y adecuado para el análisis.
+-2 Construir y aplicar una bolsa de palabras (Bag of Words) que permita identificar patrones lingüísticos y características relevantes entre reseñas legítimas y reseñas spam.
+-3 Entrenar y evaluar el modelo Naive Bayes utilizando métricas como Accuracy, F1-Score y la matriz de confusión, para validar su capacidad predictiva
+-4 Analizar los resultados obtenidos y validar si el modelo cumple con las hipótesis planteadas, determinando su eficacia para la detección automatizada de reseñas falsas.
+
+
+##Hipotesis
+H1: Las aplicaciones con mayor presencia digital presentan más reseñas spam
+A partir de las variables **app_name**, es posible observar que las aplicaciónes con mayor número total de reseñas, tambien presentan una proporción más alta de reseñas clasificadas como spam. 
+Esto podemos decir, que las apps más populares o visibles son más susceptibles a manipulación de reseñas o comentarios automatizados. 
+
+**Hipótesis, confirmada** 
+
+H2: Las aplicaciones en el sistema operativo Windows concentran más reseñas spam que otros dispositivos.
+
+utilizando la variable **device_type**, se puede analizar la distribución de **spam_flag** por dispositivo. 
+Aunque existen casos de spam en todos los dispositivos, no se observó una diferencia estadísticamente significativa entre plataformas(por ejemplo, Android, iOS o Windows). 
+
+**hipótesis parcialmante confirmada**
+
+H3: Las aplicaciones con puntuaciones extremas (muy bajas o muy altas) tienden a tener más reseñas spam.
+
+la variable rating, muestra que las reseñas con califaciónes de 1 a 5 estrellas presentan una mayor proporción de mensajes marcados como spam. 
+**Hipótesis confirmada**
+
 
 - Evaluar el valor del conocimiento extraído para el contexto del problema.
 
