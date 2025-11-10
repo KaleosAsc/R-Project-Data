@@ -739,18 +739,4 @@ Todo el código presentado en este documento está disponible y ejecutable. Los 
 # app$launch(server_name = "localhost", server_port = as.integer(3000))
 ```
 
-## Archivos generados
-
-- `cache_traduccion.rds`: Dataset con traducciones procesadas
-- `modelo_nb`: Modelo entrenado de Naive Bayes (puede ser exportado con `saveRDS()`)
-- Gráficos de evaluación en formato PNG/PDF
-
-## Información de sesión
-
-```{r session_info, echo=FALSE}
-sessionInfo()
-```
-
 ---
-
-**Fin del documento**
